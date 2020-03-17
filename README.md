@@ -18,7 +18,9 @@ As decentralization is the main goal of this application there are several probl
 2. How can i prove my Identity? How can others prove my identity?
     
     So lets play that through. You meet someone on facebook. You write some messages. So the **first level** of identification is reached "you know the owner of the account". So after some time you decide to make a video call. You can now approve the **second level** of identification which says "you approve the visual identity of the person is who the platform says". There is now only one level left. So lets say you two had contact for multiple days, weeks, months or whatever and decide to meat each other **in the real world**. As soon as you two meet you can approve or disprove the identity of the other one and successfully reach the **third level** of identification which says "you can approve the real identity of the person".
+    
     This is what should be mirrored in the usage of the app. It doesn't only handle your identity it also handles **different levels of identification** you guarantee for another people and their accounts. This has to be revocable at any time.
+    
     This mechanism is important in a decentralized identity provider. You should be able to **see who approves your identity and your ownership of different accounts** in order to trust them. This mechanism is ensured in centralized applications through the platform itself. But platforms like facebook only guarantee your ownership and real identity to mechanism like passwords and two-factor-authentication. We want to improve that.
 
 ### How to meet these goals
