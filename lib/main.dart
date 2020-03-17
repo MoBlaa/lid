@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lid/bloc/startpage.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,6 +45,17 @@ class _StartPageState extends State<StartPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              RaisedButton(
+                onPressed: () async {
+                  await bloc.genNew();
+                },
+                child: Text("Generate"),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               StreamBuilder<String>(
             stream: bloc.identity,
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -55,9 +67,10 @@ class _StartPageState extends State<StartPage> {
 
               final c_width = MediaQuery.of(context).size.width * 0.8;
 
-              return Container(
-                  width: c_width,
-                  child: Text("${snapshot.data}")
+              return QrImage(
+                data: snapshot.data,
+                version: QrVersions.auto,
+                size: c_width,
               );
             },
           ),
