@@ -1,5 +1,5 @@
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:lid/bloc/startpage.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 void main() => runApp(MyApp());
