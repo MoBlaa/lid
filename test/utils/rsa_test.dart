@@ -23,7 +23,7 @@ void main() {
     encodedPubKey.add(ASN1Integer(publicKey.modulus));
     encodedPubKey.add(ASN1Integer(publicKey.exponent));
 
-    final builder = RSACertificate()
+    final builder = RSACertGenerator()
         ..serialNumber = BigInt.two
         ..issuer = owner
         ..subject = owner

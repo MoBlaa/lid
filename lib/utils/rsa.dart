@@ -103,7 +103,7 @@ class NameBuilder {
 }
 
 /// Used to generate a X.509 Certificate as described in https://tools.ietf.org/html/rfc5280#section-4.1.
-class RSACertificate {
+class RSACertGenerator {
   BigInt serialNumber;
   ASN1Sequence issuer;
   Validity validity;

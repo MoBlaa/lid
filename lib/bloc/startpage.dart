@@ -3,6 +3,13 @@ import 'package:lid/infrastructure/owner.dart';
 import 'package:lid/infrastructure/repo.dart';
 import 'package:rxdart/rxdart.dart';
 
+/* TODO:
+    - Implement Setup process (With Name)
+    - Pairing of devices through certificates
+      - Contains all informations about the User to which one wants to connect
+      - Contains the public Key of the User
+      - Is Signed which provides proof, that the owner of the private Key approves the data
+ */
 class StartPageBloc {
   final _identity = BehaviorSubject<String>();
   final Repository repo;
