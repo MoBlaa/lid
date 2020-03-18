@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lid/infrastructure/repo.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'bloc/startpage.dart';
@@ -34,6 +35,9 @@ class StartPage extends StatefulWidget {
 }
 
 class _StartPageState extends State<StartPage> {
+  Future<StartPageBloc> bloc =
+      Repository.create().then((repo) => StartPageBloc(repo));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,39 +47,52 @@ class _StartPageState extends State<StartPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () async {
-                  await bloc.genNewEcdsa();
-                },
-                child: Text("Generate"),
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              StreamBuilder<String>(
-            stream: bloc.identity,
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          FutureBuilder<StartPageBloc>(
+            future: this.bloc,
+            builder: (ctx, snapshot) {
               if (snapshot.hasError) {
-                return Text("[Error] ${snapshot.error}");
+                return Text("Error: ${snapshot.error}");
               } else if (!snapshot.hasData) {
                 return CircularProgressIndicator();
               }
 
-              final c_width = MediaQuery.of(context).size.width * 0.8;
+              final bloc = snapshot.data;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () async {
+                          await bloc.genNewEcdsa();
+                        },
+                        child: Text("Generate"),
+                      ),
+                      StreamBuilder<String>(
+                        stream: bloc.identity,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> snapshot) {
+                          if (snapshot.hasError) {
+                            return Text("[Error] ${snapshot.error}");
+                          } else if (!snapshot.hasData) {
+                            return CircularProgressIndicator();
+                          }
 
-              return QrImage(
-                data: snapshot.data,
-                version: QrVersions.auto,
-                size: c_width,
+                          final c_width =
+                              MediaQuery.of(context).size.width * 0.8;
+
+                          return QrImage(
+                            data: snapshot.data,
+                            version: QrVersions.auto,
+                            size: c_width,
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ],
               );
             },
-          ),
-            ],
           ),
         ],
       ),
