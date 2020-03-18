@@ -64,7 +64,7 @@ class _StartPageState extends State<StartPage> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () async {
-                          await bloc.genNewEcdsa();
+                          await bloc.genNew();
                         },
                         child: Text("Generate"),
                       ),
