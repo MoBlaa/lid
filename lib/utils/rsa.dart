@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
@@ -67,4 +66,116 @@ RSAPrivateKey privateKeyFromASN1(Uint8List encoded) {
   final q = sequence.elements[3] as ASN1Integer;
   return RSAPrivateKey(modulus.valueAsBigInteger, exponent.valueAsBigInteger,
       p.valueAsBigInteger, q.valueAsBigInteger);
+}
+
+class AlgorithmId {
+  final String algorithm;
+  final ASN1Sequence parameters;
+
+  AlgorithmId(this.algorithm, this.parameters);
+}
+
+class Validity {
+  final DateTime notBefore;
+  final DateTime notAfter;
+
+  Validity(this.notBefore, this.notAfter);
+}
+
+class PublicKeyInfo {
+  final AlgorithmId algorithm;
+  final ASN1BitString subjectPublicKey;
+
+  PublicKeyInfo(this.algorithm, this.subjectPublicKey);
+}
+
+class NameBuilder {
+  ASN1Sequence _name;
+
+  NameBuilder add(ASN1Object obj) {
+    _name.add(obj);
+    return this;
+  }
+
+  ASN1Sequence build() {
+    return _name;
+  }
+}
+
+/// Used to generate a X.509 Certificate as described in https://tools.ietf.org/html/rfc5280#section-4.1.
+class RSACertificate {
+  BigInt serialNumber;
+  ASN1Sequence issuer;
+  Validity validity;
+  ASN1Sequence subject;
+  PublicKeyInfo subjectPublicKeyInfo;
+  ASN1BitString issuerUniqueIdentifier;
+  ASN1BitString subjectUniqueIdentifier;
+
+  Uint8List _signer(RSAPrivateKey privateKey, Uint8List input) {
+    final signer = RSASigner(SHA256Digest(), "0609608648016503040201");
+    signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey));
+    return signer.generateSignature(input).bytes;
+  }
+
+  Uint8List build(RSAPrivateKey privateKey) {
+    if (this.serialNumber == null) {
+      throw "Missing Certificate Serialnumber";
+    }
+    if (this.issuer == null) {
+      throw "Missing Issuer";
+    }
+    if (this.validity == null) {
+      throw "Missing validity";
+    }
+    if (this.subject == null) {
+      throw "Missing subject";
+    }
+    if (this.subjectPublicKeyInfo == null ||
+        this.subjectPublicKeyInfo.algorithm.algorithm == null ||
+        this.subjectPublicKeyInfo.subjectPublicKey == null) {
+      throw "Missing SubjectPublicKeyInfo, Algorithm Name of SubjectPublicKeyInfo or SubjectPublicKey";
+    }
+    if (this._signer == null) {
+      throw "Missing Signer";
+    }
+
+    // TBSCertificate
+    final tbsCertificate = ASN1Sequence()
+      // Version -- v2 == 1
+      ..add(ASN1Integer(BigInt.from(1)))
+      // Serial Number
+      ..add(ASN1Integer(this.serialNumber))
+      // Signature Algorithm
+      ..add(ASN1Sequence()
+        ..add(ASN1ObjectIdentifier.fromName("sha256WithRSAEncryption"))
+        ..add(ASN1Null()))
+      ..add(this.issuer)
+      // Validity
+      ..add(ASN1Sequence()
+        ..add(ASN1UtcTime(this.validity.notBefore))
+        ..add(ASN1UtcTime(this.validity.notAfter)))
+      ..add(this.subject)
+      // PublicKeyInfo
+      ..add(ASN1Sequence()
+        ..add(ASN1Sequence()
+          ..add(ASN1ObjectIdentifier.fromName(
+              this.subjectPublicKeyInfo.algorithm.algorithm))
+          ..add(this.subjectPublicKeyInfo.algorithm?.parameters ?? ASN1Null()))
+        ..add(this.subjectPublicKeyInfo.subjectPublicKey))
+      ..add(this.issuerUniqueIdentifier)
+      ..add(this.subjectUniqueIdentifier);
+
+    // Build actual Certificate
+    final certificate = ASN1Sequence()
+      ..add(tbsCertificate)
+      // SignatureAlgorithm which has to be the same as tbsCertificate.signature
+      ..add(ASN1Sequence()
+        ..add(ASN1ObjectIdentifier.fromName("sha256WithRSAEncryption"))
+        ..add(ASN1Null()))
+      // Actual Signature over tbsCertificate
+      ..add(
+          ASN1BitString(this._signer(privateKey, tbsCertificate.encodedBytes)));
+    return certificate.encodedBytes;
+  }
 }
