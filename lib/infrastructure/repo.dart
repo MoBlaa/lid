@@ -15,8 +15,8 @@ class Repository {
     return Repository._(ownerBox);
   }
 
-  void saveOwner(Owner owner) {
-    this._ownerBox.put("owner", owner);
+  void saveOwner(Owner owner) async {
+    await this._ownerBox.put("owner", owner);
   }
 
   Owner loadOwner() => this._ownerBox.get("owner");

@@ -40,6 +40,9 @@ dependencies:
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
 
+  # Dependency Injection together with the bloc pattern
+  provider: ^4.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
