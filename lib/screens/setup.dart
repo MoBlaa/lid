@@ -35,6 +35,7 @@ class _SetupScreenState extends State<SetupScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         validator: this._validateName,
+                        autofocus: true,
                         decoration: InputDecoration(
                           hintText: "Enter a name people will identify you with",
                           labelText: "Name"
