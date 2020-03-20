@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:lid/bloc/landingpage.dart';
 import 'package:lid/infrastructure/owner.dart';
 import 'package:lid/infrastructure/repo.dart';
+import 'package:lid/screens/owner.dart';
 import 'package:lid/screens/setup.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 void main() => runApp(MyApp());
 
@@ -44,9 +44,35 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
+    final repo = Provider.of<Repository>(context);
+    if (repo == null) {
+      return Container();
+    }
+    final bloc = LandingPageBloc(repo);
     return Scaffold(
       appBar: AppBar(
         title: Text("LID"),
+        actions: <Widget>[
+          StreamBuilder<Owner>(
+              stream: bloc.owner,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return IconButton(
+                    icon: Icon(Icons.warning),
+                    onPressed: null,
+                  );
+                } else if (!snapshot.hasData) {
+                  return Container();
+                }
+                return IconButton(
+                  icon: Icon(Icons.perm_identity),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => OwnerScreen(snapshot.data)
+                  )),
+                );
+              }
+          )
+        ],
       ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -54,45 +80,22 @@ class _LandingPageState extends State<LandingPage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Consumer<Repository>(
-                builder: (BuildContext context, Repository value, _) {
-                  if (value == null) {
-                    return CircularProgressIndicator();
+              StreamBuilder<Owner>(
+                stream: bloc.owner,
+                builder: (BuildContext context, AsyncSnapshot<Owner> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  } else if (!snapshot.hasData) {
+                    return _buildStartSetupButton(bloc);
+                  } else {
+                    return _buildActionsList(bloc);
                   }
-                  final bloc = LandingPageBloc(value);
-                  return StreamBuilder<Owner>(
-                    stream: bloc.owner,
-                    builder: (BuildContext context, AsyncSnapshot<Owner> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text("Error: ${snapshot.error}");
-                      } else if (!snapshot.hasData) {
-                        return _buildStartSetupButton(bloc);
-                      } else {
-                        return _buildOwner(context, snapshot.data);
-                      }
-                    },
-                  );
                 },
-              ),
+              )
             ],
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildOwner(BuildContext context, Owner owner) {
-    final c_width = MediaQuery.of(context).size.width * 0.8;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text("Name: ${owner.name}"),
-        QrImage(
-          data: owner.publicKeyASN1,
-          version: QrVersions.auto,
-          size: c_width,
-        )
-      ],
     );
   }
 
@@ -105,6 +108,17 @@ class _LandingPageState extends State<LandingPage> {
         bloc.setOwner(owner);
       },
       child: Text("Create Identity"),
+    );
+  }
+
+  Widget _buildActionsList(LandingPageBloc bloc) {
+    return Column(
+      children: <Widget>[
+        OutlineButton(
+          onPressed: null,
+          child: Text("Add Device"),
+        )
+      ],
     );
   }
 }
