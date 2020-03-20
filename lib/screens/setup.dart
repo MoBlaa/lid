@@ -30,19 +30,38 @@ class _SetupScreenState extends State<SetupScreen> {
               builder: (context, snapshot) {
                 return Column(
                   children: <Widget>[
-                    snapshot.data == SetupState.GeneratingOwner ? LinearProgressIndicator() : Container(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        validator: this._validateName,
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          hintText: "Enter a name people will identify you with",
-                          labelText: "Name"
-                        ),
-                        onFieldSubmitted: (String value) => _createIdentity(this._bloc, value),
-                      ),
-                    ),
+                    snapshot.data == SetupState.GeneratingId || snapshot.data == SetupState.GeneratingOwner
+                        ? Column(
+                          children: <Widget>[
+                            LinearProgressIndicator(),
+                            StreamBuilder<String>(
+                              stream: this._bloc.id,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Container();
+                                } else if (!snapshot.hasData) {
+                                  return Container();
+                                }
+                                return Center(
+                                    child: Text("Your id: ${snapshot.data}")
+                                );
+                              },
+                            )
+                          ],
+                        )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextFormField(
+                              validator: this._validateName,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                  hintText:
+                                      "Enter a name people will identify you with",
+                                  labelText: "Name"),
+                              onFieldSubmitted: (String value) =>
+                                  _createIdentity(this._bloc, value),
+                            ),
+                          ),
                   ],
                 );
               }),

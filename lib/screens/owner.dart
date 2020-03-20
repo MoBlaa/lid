@@ -31,12 +31,18 @@ class _OwnerScreenState extends State<OwnerScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Text(
+                this.widget._owner.name,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                    fontSize: 18),
+              ),
+            ),
             Text(
-              this.widget._owner.name,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                  fontSize: 28),
+              this.widget._owner.id
             ),
             Divider(),
             QrImage(

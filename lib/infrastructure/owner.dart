@@ -7,6 +7,7 @@ import 'package:lid/utils/rsa.dart';
 import 'package:pointycastle/export.dart';
 
 class Owner {
+  final String id;
   final String name;
   final AsymmetricKeyPair<PublicKey, PrivateKey> _keyPair;
 
@@ -18,12 +19,10 @@ class Owner {
   String get _privateKeyASN1 =>
       privateKeyToASN1(this._keyPair.privateKey as RSAPrivateKey);
 
-  Owner(this.name, this._keyPair);
+  Owner(this.id, this.name, this._keyPair);
 
-  Owner.generate(String name) : this(name, genKeyPair(newRandom()));
-
-  Owner.fromASN1(String name, Uint8List pubEncoded, Uint8List privEncoded)
-      : this(name, AsymmetricKeyPair(
+  Owner.fromASN1(String id, String name, Uint8List pubEncoded, Uint8List privEncoded)
+      : this(id, name, AsymmetricKeyPair(
             publicKeyFromASN1(pubEncoded), privateKeyFromASN1(privEncoded)));
 
   @override
@@ -37,10 +36,11 @@ class OwnerAdapter extends TypeAdapter<Owner> {
   @override
   Owner read(BinaryReader reader) {
     try {
+      final id = reader.readString();
       final name = reader.readString();
       final b64Public = reader.readString();
       final b64Private = reader.readString();
-      return Owner.fromASN1(name, base64.decode(b64Public), base64.decode(b64Private));
+      return Owner.fromASN1(id, name, base64.decode(b64Public), base64.decode(b64Private));
     } catch (e) {
       debugPrint("Got error while loading owner: '$e'. Returning empty");
       return null;
@@ -49,6 +49,7 @@ class OwnerAdapter extends TypeAdapter<Owner> {
 
   @override
   void write(BinaryWriter writer, Owner obj) {
+    writer.writeString(obj.id);
     writer.writeString(obj.name);
     writer.writeString(obj.publicKeyASN1);
     writer.writeString(obj._privateKeyASN1);
