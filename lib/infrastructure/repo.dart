@@ -20,4 +20,6 @@ class Repository {
   }
 
   Owner loadOwner() => this._ownerBox.get("owner");
+
+  void deleteOwner() async => await this._ownerBox.delete("owner");
 }

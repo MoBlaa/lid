@@ -9,7 +9,6 @@ class SetupScreen extends StatefulWidget {
 class _SetupScreenState extends State<SetupScreen> {
   final _formKey = GlobalKey<FormState>();
   final _bloc = SetupBloc();
-  String _name = "";
 
   String _validateName(String value) {
     if (value.isEmpty) {
@@ -30,37 +29,27 @@ class _SetupScreenState extends State<SetupScreen> {
               stream: this._bloc.setupState,
               builder: (context, snapshot) {
                 return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    TextFormField(
-                      validator: this._validateName,
-                      onChanged: (name) =>
-                          this.setState(() => this._name = name),
+                    snapshot.data == SetupState.GeneratingOwner ? LinearProgressIndicator() : Container(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        validator: this._validateName,
+                        decoration: InputDecoration(
+                          hintText: "Enter a name people will identify you with",
+                          labelText: "Name"
+                        ),
+                        onFieldSubmitted: (String value) => _createIdentity(this._bloc, value),
+                      ),
                     ),
-                    snapshot.data == SetupState.WaitingForInput
-                        ? _buildGenButton(context, this._bloc)
-                        : _buildGeneratingIndicator()
                   ],
                 );
               }),
         ));
   }
 
-  Widget _buildGenButton(BuildContext context, SetupBloc bloc) {
-    return RaisedButton(
-      onPressed: () async {
-        if (_formKey.currentState.validate()) {
-          Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text('Generating ...')));
-          final owner = await bloc.generate(this._name);
-          Navigator.pop(context, owner);
-        }
-      },
-      child: Text('Generate Identity'),
-    );
-  }
-
-  Widget _buildGeneratingIndicator() {
-    return CircularProgressIndicator();
+  void _createIdentity(SetupBloc bloc, String name) async {
+    final owner = await bloc.generate(name);
+    Navigator.pop(context, owner);
   }
 }

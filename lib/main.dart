@@ -66,12 +66,14 @@ class _LandingPageState extends State<LandingPage> {
                 }
                 return IconButton(
                   icon: Icon(Icons.perm_identity),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(
+                  onPressed: () async {
+                    await Navigator.push(context, MaterialPageRoute(
                       builder: (context) => OwnerScreen(snapshot.data)
-                  )),
+                    ));
+                    this.setState(() {});
+                  }
                 );
-              }
-          )
+              })
         ],
       ),
       body: Row(
@@ -102,9 +104,8 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildStartSetupButton(LandingPageBloc bloc) {
     return RaisedButton(
       onPressed: () async {
-        final owner = await Navigator.push(context, MaterialPageRoute(
-          builder: (context) => SetupScreen()
-        ));
+        final owner = await Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SetupScreen()));
         bloc.setOwner(owner);
       },
       child: Text("Create Identity"),
