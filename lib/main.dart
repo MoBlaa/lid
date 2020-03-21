@@ -3,6 +3,8 @@ import 'package:core/infrastructure/owner.dart';
 import 'package:core/infrastructure/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lid/screens/owner.dart';
 import 'package:lid/screens/setup.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureProvider(
-      create: (_) => Repository.create(),
+      create: (_) async {
+        await Hive.initFlutter();
+        return await Repository.create();
+      },
       lazy: true,
       child: MaterialApp(
         title: 'LID',
