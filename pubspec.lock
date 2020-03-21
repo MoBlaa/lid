@@ -30,7 +30,7 @@ packages:
     source: hosted
     version: "1.5.2"
   asn1lib:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: asn1lib
       url: "https://pub.dartlang.org"
@@ -418,7 +418,7 @@ packages:
     source: hosted
     version: "1.0.2"
   pointycastle:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: pointycastle
       url: "https://pub.dartlang.org"
@@ -474,7 +474,7 @@ packages:
     source: hosted
     version: "2.0.5"
   rxdart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"

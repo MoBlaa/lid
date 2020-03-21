@@ -31,15 +31,6 @@ dependencies:
   # Show public keys with qr codes
   qr_flutter: ^3.1.0
 
-  # Reactive Data handling
-  rxdart: ^0.23.1
-
-  # Generate keypairs, encryption and other stuff
-  pointycastle: ^1.0.2
-
-  # Encoding public Keys to ASN.1 files
-  asn1lib: ^0.6.4
-
   # Persistence
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2

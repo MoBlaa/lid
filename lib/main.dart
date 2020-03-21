@@ -1,8 +1,8 @@
+import 'package:core/bloc/landingpage.dart';
+import 'package:core/infrastructure/owner.dart';
+import 'package:core/infrastructure/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:lid/bloc/landingpage.dart';
-import 'package:lid/infrastructure/owner.dart';
-import 'package:lid/infrastructure/repo.dart';
 import 'package:lid/screens/owner.dart';
 import 'package:lid/screens/setup.dart';
 import 'package:provider/provider.dart';

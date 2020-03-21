@@ -1,7 +1,7 @@
+import 'package:core/bloc/owner.dart';
+import 'package:core/infrastructure/owner.dart';
+import 'package:core/infrastructure/repo.dart';
 import 'package:flutter/material.dart';
-import 'package:lid/bloc/owner.dart';
-import 'package:lid/infrastructure/owner.dart';
-import 'package:lid/infrastructure/repo.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 

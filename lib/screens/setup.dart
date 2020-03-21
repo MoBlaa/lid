@@ -1,5 +1,5 @@
+import 'package:core/bloc/setup.dart';
 import 'package:flutter/material.dart';
-import 'package:lid/bloc/setup.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
