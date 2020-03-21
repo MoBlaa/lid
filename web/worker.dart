@@ -23,6 +23,7 @@ void main() {
     final e = event as MessageEvent;
     final data = WorkerEvent.resolve(e.data as String);
 
+    // TODO: Do this in WASM to speed things up
     switch (data.type) {
       case GenIdType:
         final event = data as GenIdEvent;
