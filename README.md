@@ -44,3 +44,13 @@ So what does the application actually have to do:
 - [v0.2.0]: Identity book - personal handshake with other User to add him to your identity book.
 - [v0.3.0]: Callable from other apps to: Get Identity of the user, add others to the identity book, get approval level for other user.
 - [v0.4.0]: External accounts - add accounts of different platforms to your identity and share them with others.
+
+### Notes
+
+General Notes for users and developers which have no place in the documentation yet.
+
+#### About Flutter Web and AnuglarDart
+
+Currently Flutter Web is in Beta (2020.03.21). As stated in [this PR](https://github.com/flutter/flutter/issues/33577) there is currently no easy way to implement background computations on the web. For this reason and to provide a different feeling on web with bigger screens and mobile with smaller screens there are GUI implementations in Flutter and AngularDart.
+
+Until the state of flutter web reaches a mature state this won't change.
