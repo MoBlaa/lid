@@ -38,6 +38,9 @@ dependencies:
   # Dependency Injection together with the bloc pattern
   provider: ^4.0.4
 
+  # Generate keypairs, encryption and other stuff
+  pointycastle: ^1.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
