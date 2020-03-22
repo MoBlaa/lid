@@ -46,7 +46,7 @@ class _OwnerScreenState extends State<OwnerScreen> {
             ),
             Divider(),
             QrImage(
-              data: this.widget._owner.publicKeyASN1,
+              data: "${this.widget._owner.id}::${this.widget._owner.name}::${this.widget._owner.module.algorithm}::${this.widget._owner.publicKeyASN1}",
               version: QrVersions.auto,
               size: c_width,
             ),

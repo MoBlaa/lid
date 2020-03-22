@@ -226,9 +226,6 @@
       P.RangeError_checkNotNegative(_start, "start");
       return new H.SubListIterable(_iterable, _start, _endOrLength, [$E]);
     },
-    IterableElementError_noElement: function() {
-      return new P.StateError("No element");
-    },
     IterableElementError_tooFew: function() {
       return new P.StateError("Too few elements");
     },
@@ -250,6 +247,11 @@
       _.__internal$_index = 0;
       _.__internal$_current = null;
       _.$ti = t2;
+    },
+    MappedListIterable: function MappedListIterable(t0, t1, t2) {
+      this._source = t0;
+      this._f = t1;
+      this.$ti = t2;
     },
     FixedLengthListMixin: function FixedLengthListMixin() {
     },
@@ -1789,9 +1791,10 @@
       this.prototypeForTag = t0;
     },
     JSSyntaxRegExp: function JSSyntaxRegExp(t0, t1) {
-      this.pattern = t0;
-      this._nativeRegExp = t1;
-      this._nativeGlobalRegExp = null;
+      var _ = this;
+      _.pattern = t0;
+      _._nativeRegExp = t1;
+      _._nativeAnchoredRegExp = _._nativeGlobalRegExp = null;
     },
     _MatchImplementation: function _MatchImplementation(t0) {
       this._match = t0;
@@ -2110,6 +2113,9 @@
     },
     noSuchMethod$1$: function(receiver, a0) {
       return J.getInterceptor$(receiver).noSuchMethod$1(receiver, a0);
+    },
+    skip$1$ax: function(receiver, a0) {
+      return J.getInterceptor$ax(receiver).skip$1(receiver, a0);
     },
     toInt$0$n: function(receiver) {
       return J.getInterceptor$n(receiver).toInt$0(receiver);
@@ -2518,7 +2524,7 @@
     List_List$filled: function($length, fill, $E) {
       var i,
         result = J.JSArray_JSArray$fixed($length, $E);
-      if ($length !== 0 && true)
+      if ($length !== 0 && fill != null)
         for (i = 0; i < result.length; ++i)
           C.JSArray_methods.$indexSet(result, i, fill);
       return H.assertSubtype(result, "$isList", [$E], "$asList");
@@ -3053,103 +3059,41 @@
       return quotientDigit;
     },
     _BigIntImpl__binaryGcd: function(x, y, inv) {
-      var t1, maxUsed0, shiftAmount, t2, digitShiftAmount, t0, uDigits, vDigits, ac, abcdUsed, abcdLen, aDigits, cDigits, bDigits, dDigits, t3, t4, aIsNegative, cIsNegative, bIsNegative, dIsNegative, t5, t6, a_cmp_c, b_cmp_d, c_cmp_a, d_cmp_b, i,
+      var t1, uDigits, vDigits, ac, abcdUsed, abcdLen, aDigits, cDigits, bDigits, dDigits, t2, t3, t4, aIsNegative, cIsNegative, bIsNegative, dIsNegative, t5, t6, a_cmp_c, b_cmp_d, c_cmp_a, d_cmp_b, i,
         _s11_ = "Not coprime",
-        _s16_ = "must not be zero",
         yDigits = y._digits,
         xUsed = x._used,
         yUsed = y._used,
         maxUsed = xUsed > yUsed ? xUsed : yUsed,
         xDigits = P._BigIntImpl__cloneDigits(x._digits, 0, xUsed, maxUsed);
       yDigits = P._BigIntImpl__cloneDigits(yDigits, 0, yUsed, maxUsed);
-      if (inv) {
-        if (yUsed === 1) {
-          if (0 >= yDigits.length)
-            return H.ioore(yDigits, 0);
-          t1 = yDigits[0] === 1;
-        } else
-          t1 = false;
-        if (t1)
-          return $.$get$_BigIntImpl_one();
-        if (yUsed !== 0) {
-          if (0 >= yDigits.length)
-            return H.ioore(yDigits, 0);
-          if ((yDigits[0] & 1) === 0) {
-            if (0 >= xDigits.length)
-              return H.ioore(xDigits, 0);
-            t1 = (xDigits[0] & 1) === 0;
-          } else
-            t1 = false;
-        } else
-          t1 = true;
-        if (t1)
-          throw H.wrapException(P.Exception_Exception(_s11_));
-        maxUsed0 = maxUsed;
-        shiftAmount = 0;
-      } else {
-        if (xUsed === 0)
-          throw H.wrapException(P.ArgumentError$value(0, "this", _s16_));
-        if (yUsed === 0)
-          throw H.wrapException(P.ArgumentError$value(0, "other", _s16_));
-        if (xUsed === 1) {
+      if (yUsed === 1) {
+        if (0 >= yDigits.length)
+          return H.ioore(yDigits, 0);
+        t1 = yDigits[0] === 1;
+      } else
+        t1 = false;
+      if (t1)
+        return $.$get$_BigIntImpl_one();
+      if (yUsed !== 0) {
+        if (0 >= yDigits.length)
+          return H.ioore(yDigits, 0);
+        if ((yDigits[0] & 1) === 0) {
           if (0 >= xDigits.length)
             return H.ioore(xDigits, 0);
-          t1 = xDigits[0] === 1;
+          t1 = (xDigits[0] & 1) === 0;
         } else
           t1 = false;
-        if (!t1)
-          if (yUsed === 1) {
-            if (0 >= yDigits.length)
-              return H.ioore(yDigits, 0);
-            t1 = yDigits[0] === 1;
-          } else
-            t1 = false;
-        else
-          t1 = true;
-        if (t1)
-          return $.$get$_BigIntImpl_one();
-        if (0 >= xDigits.length)
-          return H.ioore(xDigits, 0);
-        t1 = yDigits.length;
-        shiftAmount = 0;
-        while (true) {
-          if ((xDigits[0] & 1) === 0) {
-            if (0 >= t1)
-              return H.ioore(yDigits, 0);
-            t2 = (yDigits[0] & 1) === 0;
-          } else
-            t2 = false;
-          if (!t2)
-            break;
-          P._BigIntImpl__rsh(xDigits, xUsed, 1, xDigits);
-          P._BigIntImpl__rsh(yDigits, yUsed, 1, yDigits);
-          ++shiftAmount;
-        }
-        if (shiftAmount >= 16) {
-          digitShiftAmount = C.JSInt_methods._tdivFast$1(shiftAmount, 16);
-          xUsed -= digitShiftAmount;
-          yUsed -= digitShiftAmount;
-          maxUsed0 = maxUsed - digitShiftAmount;
-        } else
-          maxUsed0 = maxUsed;
-        if (0 >= t1)
-          return H.ioore(yDigits, 0);
-        if ((yDigits[0] & 1) === 1) {
-          t0 = yUsed;
-          yUsed = xUsed;
-          xUsed = t0;
-          t0 = yDigits;
-          yDigits = xDigits;
-          xDigits = t0;
-        }
-        inv = false;
-      }
+      } else
+        t1 = true;
+      if (t1)
+        throw H.wrapException(P.Exception_Exception(_s11_));
       uDigits = P._BigIntImpl__cloneDigits(xDigits, 0, xUsed, maxUsed);
       vDigits = P._BigIntImpl__cloneDigits(yDigits, 0, yUsed, maxUsed + 2);
       if (0 >= xDigits.length)
         return H.ioore(xDigits, 0);
       ac = (xDigits[0] & 1) === 0;
-      abcdUsed = maxUsed0 + 1;
+      abcdUsed = maxUsed + 1;
       abcdLen = abcdUsed + 2;
       aDigits = $.$get$_dummyList();
       if (ac) {
@@ -3170,7 +3114,7 @@
         if (0 >= t2)
           return H.ioore(uDigits, 0);
         for (; (uDigits[0] & 1) === 0;) {
-          P._BigIntImpl__rsh(uDigits, maxUsed0, 1, uDigits);
+          P._BigIntImpl__rsh(uDigits, maxUsed, 1, uDigits);
           if (ac) {
             t5 = aDigits.length;
             if (0 >= t5)
@@ -3183,27 +3127,27 @@
               t6 = true;
             if (t6) {
               if (aIsNegative) {
-                if (maxUsed0 < 0 || maxUsed0 >= t5)
-                  return H.ioore(aDigits, maxUsed0);
-                if (aDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(aDigits, maxUsed0, yDigits, maxUsed0) > 0) {
-                  P._BigIntImpl__absSub(aDigits, abcdUsed, yDigits, maxUsed0, aDigits);
+                if (maxUsed < 0 || maxUsed >= t5)
+                  return H.ioore(aDigits, maxUsed);
+                if (aDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(aDigits, maxUsed, yDigits, maxUsed) > 0) {
+                  P._BigIntImpl__absSub(aDigits, abcdUsed, yDigits, maxUsed, aDigits);
                   aIsNegative = true;
                 } else {
-                  P._BigIntImpl__absSub(yDigits, maxUsed0, aDigits, maxUsed0, aDigits);
+                  P._BigIntImpl__absSub(yDigits, maxUsed, aDigits, maxUsed, aDigits);
                   aIsNegative = false;
                 }
               } else
-                P._BigIntImpl__absAdd(aDigits, abcdUsed, yDigits, maxUsed0, aDigits);
+                P._BigIntImpl__absAdd(aDigits, abcdUsed, yDigits, maxUsed, aDigits);
               if (bIsNegative)
-                P._BigIntImpl__absAdd(bDigits, abcdUsed, xDigits, maxUsed0, bDigits);
+                P._BigIntImpl__absAdd(bDigits, abcdUsed, xDigits, maxUsed, bDigits);
               else {
-                if (maxUsed0 < 0 || maxUsed0 >= t4)
-                  return H.ioore(bDigits, maxUsed0);
-                if (bDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(bDigits, maxUsed0, xDigits, maxUsed0) > 0) {
-                  P._BigIntImpl__absSub(bDigits, abcdUsed, xDigits, maxUsed0, bDigits);
+                if (maxUsed < 0 || maxUsed >= t4)
+                  return H.ioore(bDigits, maxUsed);
+                if (bDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(bDigits, maxUsed, xDigits, maxUsed) > 0) {
+                  P._BigIntImpl__absSub(bDigits, abcdUsed, xDigits, maxUsed, bDigits);
                   bIsNegative = false;
                 } else {
-                  P._BigIntImpl__absSub(xDigits, maxUsed0, bDigits, maxUsed0, bDigits);
+                  P._BigIntImpl__absSub(xDigits, maxUsed, bDigits, maxUsed, bDigits);
                   bIsNegative = true;
                 }
               }
@@ -3214,15 +3158,15 @@
               return H.ioore(bDigits, 0);
             if ((bDigits[0] & 1) === 1)
               if (bIsNegative)
-                P._BigIntImpl__absAdd(bDigits, abcdUsed, xDigits, maxUsed0, bDigits);
+                P._BigIntImpl__absAdd(bDigits, abcdUsed, xDigits, maxUsed, bDigits);
               else {
-                if (maxUsed0 < 0 || maxUsed0 >= t4)
-                  return H.ioore(bDigits, maxUsed0);
-                if (bDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(bDigits, maxUsed0, xDigits, maxUsed0) > 0) {
-                  P._BigIntImpl__absSub(bDigits, abcdUsed, xDigits, maxUsed0, bDigits);
+                if (maxUsed < 0 || maxUsed >= t4)
+                  return H.ioore(bDigits, maxUsed);
+                if (bDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(bDigits, maxUsed, xDigits, maxUsed) > 0) {
+                  P._BigIntImpl__absSub(bDigits, abcdUsed, xDigits, maxUsed, bDigits);
                   bIsNegative = false;
                 } else {
-                  P._BigIntImpl__absSub(xDigits, maxUsed0, bDigits, maxUsed0, bDigits);
+                  P._BigIntImpl__absSub(xDigits, maxUsed, bDigits, maxUsed, bDigits);
                   bIsNegative = true;
                 }
               }
@@ -3232,34 +3176,34 @@
         if (0 >= t3)
           return H.ioore(vDigits, 0);
         for (; (vDigits[0] & 1) === 0;) {
-          P._BigIntImpl__rsh(vDigits, maxUsed0, 1, vDigits);
+          P._BigIntImpl__rsh(vDigits, maxUsed, 1, vDigits);
           if (ac) {
             t5 = cDigits.length;
             if (0 >= t5)
               return H.ioore(cDigits, 0);
             if ((cDigits[0] & 1) === 1 || (dDigits[0] & 1) === 1) {
               if (cIsNegative) {
-                if (maxUsed0 < 0 || maxUsed0 >= t5)
-                  return H.ioore(cDigits, maxUsed0);
-                if (cDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(cDigits, maxUsed0, yDigits, maxUsed0) > 0) {
-                  P._BigIntImpl__absSub(cDigits, abcdUsed, yDigits, maxUsed0, cDigits);
+                if (maxUsed < 0 || maxUsed >= t5)
+                  return H.ioore(cDigits, maxUsed);
+                if (cDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(cDigits, maxUsed, yDigits, maxUsed) > 0) {
+                  P._BigIntImpl__absSub(cDigits, abcdUsed, yDigits, maxUsed, cDigits);
                   cIsNegative = true;
                 } else {
-                  P._BigIntImpl__absSub(yDigits, maxUsed0, cDigits, maxUsed0, cDigits);
+                  P._BigIntImpl__absSub(yDigits, maxUsed, cDigits, maxUsed, cDigits);
                   cIsNegative = false;
                 }
               } else
-                P._BigIntImpl__absAdd(cDigits, abcdUsed, yDigits, maxUsed0, cDigits);
+                P._BigIntImpl__absAdd(cDigits, abcdUsed, yDigits, maxUsed, cDigits);
               if (dIsNegative)
-                P._BigIntImpl__absAdd(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+                P._BigIntImpl__absAdd(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
               else {
-                if (maxUsed0 < 0 || maxUsed0 >= t1)
-                  return H.ioore(dDigits, maxUsed0);
-                if (dDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed0, xDigits, maxUsed0) > 0) {
-                  P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+                if (maxUsed < 0 || maxUsed >= t1)
+                  return H.ioore(dDigits, maxUsed);
+                if (dDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed, xDigits, maxUsed) > 0) {
+                  P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
                   dIsNegative = false;
                 } else {
-                  P._BigIntImpl__absSub(xDigits, maxUsed0, dDigits, maxUsed0, dDigits);
+                  P._BigIntImpl__absSub(xDigits, maxUsed, dDigits, maxUsed, dDigits);
                   dIsNegative = true;
                 }
               }
@@ -3267,22 +3211,22 @@
             P._BigIntImpl__rsh(cDigits, abcdUsed, 1, cDigits);
           } else if ((dDigits[0] & 1) === 1)
             if (dIsNegative)
-              P._BigIntImpl__absAdd(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+              P._BigIntImpl__absAdd(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
             else {
-              if (maxUsed0 < 0 || maxUsed0 >= t1)
-                return H.ioore(dDigits, maxUsed0);
-              if (dDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed0, xDigits, maxUsed0) > 0) {
-                P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+              if (maxUsed < 0 || maxUsed >= t1)
+                return H.ioore(dDigits, maxUsed);
+              if (dDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed, xDigits, maxUsed) > 0) {
+                P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
                 dIsNegative = false;
               } else {
-                P._BigIntImpl__absSub(xDigits, maxUsed0, dDigits, maxUsed0, dDigits);
+                P._BigIntImpl__absSub(xDigits, maxUsed, dDigits, maxUsed, dDigits);
                 dIsNegative = true;
               }
             }
           P._BigIntImpl__rsh(dDigits, abcdUsed, 1, dDigits);
         }
-        if (P._BigIntImpl__compareDigits(uDigits, maxUsed0, vDigits, maxUsed0) >= 0) {
-          P._BigIntImpl__absSub(uDigits, maxUsed0, vDigits, maxUsed0, uDigits);
+        if (P._BigIntImpl__compareDigits(uDigits, maxUsed, vDigits, maxUsed) >= 0) {
+          P._BigIntImpl__absSub(uDigits, maxUsed, vDigits, maxUsed, uDigits);
           if (ac)
             if (aIsNegative === cIsNegative) {
               a_cmp_c = P._BigIntImpl__compareDigits(aDigits, abcdUsed, cDigits, abcdUsed);
@@ -3305,7 +3249,7 @@
           } else
             P._BigIntImpl__absAdd(bDigits, abcdUsed, dDigits, abcdUsed, bDigits);
         } else {
-          P._BigIntImpl__absSub(vDigits, maxUsed0, uDigits, maxUsed0, vDigits);
+          P._BigIntImpl__absSub(vDigits, maxUsed, uDigits, maxUsed, vDigits);
           if (ac)
             if (cIsNegative === aIsNegative) {
               c_cmp_a = P._BigIntImpl__compareDigits(cDigits, abcdUsed, aDigits, abcdUsed);
@@ -3328,7 +3272,7 @@
           } else
             P._BigIntImpl__absAdd(dDigits, abcdUsed, bDigits, abcdUsed, dDigits);
         }
-        i = maxUsed0;
+        i = maxUsed;
         while (true) {
           if (i > 0) {
             t5 = i - 1;
@@ -3344,11 +3288,7 @@
         if (i === 0)
           break;
       }
-      if (!inv) {
-        t1 = P._BigIntImpl__normalize(shiftAmount > 0 ? P._BigIntImpl__lShiftDigits(vDigits, maxUsed0, shiftAmount, vDigits) : maxUsed0, vDigits);
-        return new P._BigIntImpl(false, vDigits, t1);
-      }
-      i = maxUsed0 - 1;
+      i = maxUsed - 1;
       while (true) {
         if (i > 0) {
           if (i >= t3)
@@ -3369,24 +3309,24 @@
       if (t2)
         throw H.wrapException(P.Exception_Exception(_s11_));
       if (dIsNegative) {
-        if (maxUsed0 < 0 || maxUsed0 >= t1)
-          return H.ioore(dDigits, maxUsed0);
+        if (maxUsed < 0 || maxUsed >= t1)
+          return H.ioore(dDigits, maxUsed);
         while (true) {
-          if (!(dDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed0, xDigits, maxUsed0) > 0))
+          if (!(dDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed, xDigits, maxUsed) > 0))
             break;
-          P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+          P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
         }
-        P._BigIntImpl__absSub(xDigits, maxUsed0, dDigits, maxUsed0, dDigits);
+        P._BigIntImpl__absSub(xDigits, maxUsed, dDigits, maxUsed, dDigits);
       } else {
-        if (maxUsed0 < 0 || maxUsed0 >= t1)
-          return H.ioore(dDigits, maxUsed0);
+        if (maxUsed < 0 || maxUsed >= t1)
+          return H.ioore(dDigits, maxUsed);
         while (true) {
-          if (!(dDigits[maxUsed0] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed0, xDigits, maxUsed0) >= 0))
+          if (!(dDigits[maxUsed] !== 0 || P._BigIntImpl__compareDigits(dDigits, maxUsed, xDigits, maxUsed) >= 0))
             break;
-          P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed0, dDigits);
+          P._BigIntImpl__absSub(dDigits, abcdUsed, xDigits, maxUsed, dDigits);
         }
       }
-      t1 = P._BigIntImpl__normalize(maxUsed0, dDigits);
+      t1 = P._BigIntImpl__normalize(maxUsed, dDigits);
       return new P._BigIntImpl(false, dDigits, t1);
     },
     Error_safeToString: function(object) {
@@ -3407,6 +3347,10 @@
     },
     RangeError$range: function(invalidValue, minValue, maxValue, $name, message) {
       return new P.RangeError(minValue, maxValue, true, invalidValue, $name, "Invalid value");
+    },
+    RangeError_checkValueInInterval: function(value, minValue, maxValue, $name) {
+      if (value < minValue || value > maxValue)
+        throw H.wrapException(P.RangeError$range(value, minValue, maxValue, $name, null));
     },
     RangeError_checkValidRange: function(start, end, $length) {
       if (0 > start || start > $length)
@@ -3711,6 +3655,54 @@
       }
       return e;
     },
+    ASN1ObjectIdentifier_fromComponentString: function(path) {
+      var t1 = H.setRuntimeTypeInfo(path.split("."), [P.String]),
+        t2 = P.int,
+        t3 = H.getTypeArgumentByIndex(t1, 0);
+      return K.ASN1ObjectIdentifier_fromComponents(new H.MappedListIterable(t1, H.functionTypeCheck(new K.ASN1ObjectIdentifier_fromComponentString_closure(), {func: 1, ret: t2, args: [t3]}), [t3, t2]).toList$0(0), 6);
+    },
+    ASN1ObjectIdentifier_fromComponents: function(components, tag) {
+      var t2, ci, position, v, first, remainder,
+        oi = H.setRuntimeTypeInfo([], [P.int]),
+        t1 = components.length;
+      if (0 >= t1)
+        return H.ioore(components, 0);
+      t2 = components[0];
+      if (typeof t2 !== "number")
+        return t2.$mul();
+      if (1 >= t1)
+        return H.ioore(components, 1);
+      t1 = components[1];
+      if (typeof t1 !== "number")
+        return H.iae(t1);
+      C.JSArray_methods.add$1(oi, t2 * 40 + t1);
+      for (t1 = H.getTypeArgumentByIndex(oi, 0), ci = 2; ci < components.length; ++ci) {
+        position = oi.length;
+        v = components[ci];
+        first = true;
+        do {
+          if (typeof v !== "number")
+            return v.$and();
+          remainder = v & 127;
+          v = C.JSInt_methods._shrOtherPositive$1(v, 7);
+          if (first)
+            first = false;
+          else
+            remainder |= 128;
+          H.assertSubtypeOfRuntimeType(remainder, t1);
+          if (!!oi.fixed$length)
+            H.throwExpression(P.UnsupportedError$("insert"));
+          t2 = oi.length;
+          if (position > t2)
+            H.throwExpression(P.RangeError$value(position, null));
+          oi.splice(position, 0, remainder);
+        } while (v > 0);
+      }
+      return new K.ASN1ObjectIdentifier(oi, tag);
+    },
+    ASN1ObjectIdentifier_registerManyNames: function(pairs) {
+      pairs.forEach$1(0, new K.ASN1ObjectIdentifier_registerManyNames_closure());
+    },
     ASN1Util_listToString: function(list) {
       var t1 = {},
         b = new P.StringBuffer("[");
@@ -3718,6 +3710,13 @@
       (list && C.NativeUint8List_methods).forEach$1(list, new K.ASN1Util_listToString_closure(t1, b));
       t1 = b._contents += "]";
       return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
+    ASN1BitString: function ASN1BitString(t0, t1) {
+      var _ = this;
+      _.stringValue = t0;
+      _._tag = t1;
+      _._valueByteLength = _._encodedBytes = null;
+      _._valueStartPosition = 2;
     },
     ASN1Integer: function ASN1Integer(t0, t1) {
       var _ = this;
@@ -3727,6 +3726,17 @@
       _._valueStartPosition = 2;
     },
     ASN1Object: function ASN1Object() {
+    },
+    ASN1ObjectIdentifier: function ASN1ObjectIdentifier(t0, t1) {
+      var _ = this;
+      _.oi = t0;
+      _._tag = t1;
+      _._valueByteLength = _._encodedBytes = null;
+      _._valueStartPosition = 2;
+    },
+    ASN1ObjectIdentifier_fromComponentString_closure: function ASN1ObjectIdentifier_fromComponentString_closure() {
+    },
+    ASN1ObjectIdentifier_registerManyNames_closure: function ASN1ObjectIdentifier_registerManyNames_closure() {
     },
     ASN1Sequence: function ASN1Sequence(t0, t1) {
       var _ = this;
@@ -3777,38 +3787,46 @@
     },
     ECCurve_brainpoolp224t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new K.ECCurve_brainpoolp224t1(_h);
+      return new K.ECCurve_brainpoolp224t1($G, n, _h);
     },
-    ECCurve_brainpoolp224t1: function ECCurve_brainpoolp224t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp224t1: function ECCurve_brainpoolp224t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp224t1_closure: function ECCurve_brainpoolp224t1_closure() {
     },
     ECCurve_brainpoolp256t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new K.ECCurve_brainpoolp256t1(_h);
+      return new K.ECCurve_brainpoolp256t1($G, n, _h);
     },
-    ECCurve_brainpoolp256t1: function ECCurve_brainpoolp256t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp256t1: function ECCurve_brainpoolp256t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp256t1_closure: function ECCurve_brainpoolp256t1_closure() {
     },
     ECCurve_secp256k1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new K.ECCurve_secp256k1(_h);
+      return new K.ECCurve_secp256k1($G, n, _h);
     },
-    ECCurve_secp256k1: function ECCurve_secp256k1(t0) {
-      this._h = t0;
+    ECCurve_secp256k1: function ECCurve_secp256k1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp256k1_closure: function ECCurve_secp256k1_closure() {
     },
     BaseKeyDerivator: function BaseKeyDerivator() {
     }
   },
-  E = {Owner: function Owner(t0, t1, t2) {
-      this.id = t0;
-      this.name = t1;
-      this._keyPair = t2;
+  E = {Owner: function Owner(t0, t1, t2, t3) {
+      var _ = this;
+      _.id = t0;
+      _.name = t1;
+      _.module = t2;
+      _._keyPair = t3;
     }, RSAEngine: function RSAEngine() {
     }, RSAEngine_closure: function RSAEngine_closure() {
     }, SHA224Digest: function SHA224Digest(t0, t1, t2, t3, t4, t5) {
@@ -3825,19 +3843,23 @@
     },
     ECCurve_brainpoolp192t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new E.ECCurve_brainpoolp192t1(_h);
+      return new E.ECCurve_brainpoolp192t1($G, n, _h);
     },
-    ECCurve_brainpoolp192t1: function ECCurve_brainpoolp192t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp192t1: function ECCurve_brainpoolp192t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp192t1_closure: function ECCurve_brainpoolp192t1_closure() {
     },
     ECCurve_brainpoolp256r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new E.ECCurve_brainpoolp256r1(_h);
+      return new E.ECCurve_brainpoolp256r1($G, n, _h);
     },
-    ECCurve_brainpoolp256r1: function ECCurve_brainpoolp256r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp256r1: function ECCurve_brainpoolp256r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp256r1_closure: function ECCurve_brainpoolp256r1_closure() {
     },
@@ -3857,12 +3879,26 @@
     FortunaRandom_closure: function FortunaRandom_closure() {
     }
   },
-  R = {
+  A = {AsymmetricModule: function AsymmetricModule() {
+    },
+    generateRandomString: function(strlen) {
+      var i, t1,
+        rnd = $.Random__secureRandom;
+      if (rnd == null)
+        rnd = $.Random__secureRandom = P._JSSecureRandom$();
+      if (typeof strlen !== "number")
+        return H.iae(strlen);
+      i = 0;
+      t1 = "";
+      for (; i < strlen; ++i)
+        t1 += H.Primitives_stringFromCharCode(C.JSString_methods._codeUnitAt$1(C.JSString_methods.$index("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", rnd.nextInt$1(62)), 0));
+      return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
     newRandom: function() {
       var iv, t3, t4,
         rnd = E.FortunaRandom$(),
         random = $.Random__secureRandom,
-        t1 = new Uint8Array(H._ensureNativeList(P.List_List$generate(32, new R.newRandom_closure(random == null ? $.Random__secureRandom = P._JSSecureRandom$() : random), P.int))),
+        t1 = new Uint8Array(H._ensureNativeList(P.List_List$generate(32, new A.newRandom_closure(random == null ? $.Random__secureRandom = P._JSSecureRandom$() : random), P.int))),
         t2 = t1.length;
       if (t2 !== 32)
         H.throwExpression(P.ArgumentError$("Fortuna PRNG can only be used with 256 bits keys"));
@@ -3883,84 +3919,126 @@
     newRandom_closure: function newRandom_closure(t0) {
       this.random = t0;
     },
-    TigerDigest: function TigerDigest(t0, t1, t2, t3, t4, t5) {
-      var _ = this;
-      _._tiger$_a = t0;
-      _._tiger$_b = t1;
-      _._c = t2;
-      _._byteCount = t3;
-      _._wordBuffer = t4;
-      _._tiger$_buffer = t5;
+    OAEPEncoding: function OAEPEncoding(t0, t1) {
+      this.hash = t0;
+      this.defHash = t1;
     },
-    TigerDigest_closure: function TigerDigest_closure() {
+    OAEPEncoding_closure: function OAEPEncoding_closure() {
     },
-    ECCurve_secp521r1__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new R.ECCurve_secp521r1(_h);
-    },
-    ECCurve_secp521r1: function ECCurve_secp521r1(t0) {
-      this._h = t0;
-    },
-    ECCurve_secp521r1_closure: function ECCurve_secp521r1_closure() {
-    },
-    CMac: function CMac(t0, t1) {
-      this._cipher = t0;
-      this._cmac$_macSize = t1;
-    },
-    CMac_closure: function CMac_closure() {
-    },
-    CMac__closure: function CMac__closure(t0) {
+    OAEPEncoding__closure: function OAEPEncoding__closure(t0) {
       this.match = t0;
     },
-    PKCS7Padding: function PKCS7Padding() {
+    ECCurve_gostr3410_2001_cryptopro_xchb__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new A.ECCurve_gostr3410_2001_cryptopro_xchb($G, n, _h);
     },
-    PKCS7Padding_closure: function PKCS7Padding_closure() {
+    ECCurve_gostr3410_2001_cryptopro_xchb: function ECCurve_gostr3410_2001_cryptopro_xchb(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
-    BaseStreamCipher: function BaseStreamCipher() {
+    ECCurve_gostr3410_2001_cryptopro_xchb_closure: function ECCurve_gostr3410_2001_cryptopro_xchb_closure() {
     },
-    SecureRandomBase: function SecureRandomBase() {
-    },
-    StaticFactoryConfig$: function(type, algorithmName, factory) {
-      return new R.StaticFactoryConfig(algorithmName, factory, type);
-    },
-    _escapeRegExp: function(str) {
-      return H.stringReplaceAllFuncUnchecked(str, $.$get$_specialRegExpChars(), H.functionTypeCheck(new R._escapeRegExp_closure(), {func: 1, ret: P.String, args: [P.Match]}), H.functionTypeCheck(new R._escapeRegExp_closure0(), {func: 1, ret: P.String, args: [P.String]}));
-    },
-    DynamicFactoryConfig$: function(type, regExp, factory) {
-      return new R.DynamicFactoryConfig(regExp, factory, type);
-    },
-    DynamicFactoryConfig$regex: function(type, regexString, factory) {
-      return new R.DynamicFactoryConfig(P.RegExp_RegExp(regexString, true), factory, type);
-    },
-    DynamicFactoryConfig$suffix: function(type, suffix, factory) {
-      return new R.DynamicFactoryConfig(P.RegExp_RegExp("^(.+)" + R._escapeRegExp(suffix) + "$", true), factory, type);
-    },
-    FactoryConfig: function FactoryConfig() {
-    },
-    StaticFactoryConfig: function StaticFactoryConfig(t0, t1, t2) {
-      this.algorithmName = t0;
-      this.factory = t1;
-      this.type = t2;
-    },
-    _escapeRegExp_closure: function _escapeRegExp_closure() {
-    },
-    _escapeRegExp_closure0: function _escapeRegExp_closure0() {
-    },
-    DynamicFactoryConfig: function DynamicFactoryConfig(t0, t1, t2) {
-      this.regExp = t0;
-      this.factory = t1;
-      this.type = t2;
-    },
-    _RegistryImpl: function _RegistryImpl(t0, t1, t2) {
+    Salsa20Engine: function Salsa20Engine(t0, t1, t2) {
       var _ = this;
-      _._staticFactories = t0;
-      _._dynamicFactories = t1;
-      _._constructorCache = t2;
-      _._initialized = false;
+      _._workingIV = _._workingKey = null;
+      _._salsa20$_state = t0;
+      _._buffer = t1;
+      _._keyStream = t2;
+      _._keyStreamOffset = 0;
+      _._initialised = false;
     },
-    _RegistryImpl__addStaticFactoryConfig_closure: function _RegistryImpl__addStaticFactoryConfig_closure() {
+    Salsa20Engine_closure: function Salsa20Engine_closure() {
+    }
+  },
+  D = {ECDSAModule: function ECDSAModule() {
     },
-    _RegistryImpl__addDynamicFactoryConfig_closure: function _RegistryImpl__addDynamicFactoryConfig_closure() {
+    _subWord: function(x) {
+      return ($._S[x & 255] & 255 | ($._S[C.JSInt_methods._shrOtherPositive$1(x, 8) & 255] & 255) << 8 | ($._S[C.JSInt_methods._shrOtherPositive$1(x, 16) & 255] & 255) << 16 | $._S[C.JSInt_methods._shrOtherPositive$1(x, 24) & 255] << 24) >>> 0;
+    },
+    AESFastEngine: function AESFastEngine() {
+      var _ = this;
+      _._C3 = _._C2 = _._C1 = _._C0 = _._ROUNDS = _._aes_fast$_workingKey = _._forEncryption = null;
+    },
+    AESFastEngine_closure: function AESFastEngine_closure() {
+    },
+    AESFastEngine_init_closure: function AESFastEngine_init_closure() {
+    },
+    RIPEMD160Digest: function RIPEMD160Digest(t0, t1, t2, t3, t4, t5) {
+      var _ = this;
+      _._md4_family_digest$_byteCount = t0;
+      _._md4_family_digest$_wordBuffer = t1;
+      _._md4_family_digest$_wordBufferOffset = null;
+      _._endian = t2;
+      _._packedStateSize = t3;
+      _.state = t4;
+      _.buffer = t5;
+      _.bufferOffset = null;
+    },
+    RIPEMD160Digest_closure: function RIPEMD160Digest_closure() {
+    },
+    SHA3Digest: function SHA3Digest(t0, t1) {
+      this._fixedOutputLength = null;
+      this._sha3$_state = t0;
+      this._dataQueue = t1;
+    },
+    SHA3Digest_closure: function SHA3Digest_closure() {
+    },
+    SHA3Digest__closure: function SHA3Digest__closure(t0) {
+      this.match = t0;
+    },
+    SHA512tDigest: function SHA512tDigest(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20) {
+      var _ = this;
+      _.digestSize = t0;
+      _._H1t = t1;
+      _._H2t = t2;
+      _._H3t = t3;
+      _._H4t = t4;
+      _._H5t = t5;
+      _._H6t = t6;
+      _._H7t = t7;
+      _._H8t = t8;
+      _.H1 = t9;
+      _.H2 = t10;
+      _.H3 = t11;
+      _.H4 = t12;
+      _.H5 = t13;
+      _.H6 = t14;
+      _.H7 = t15;
+      _.H8 = t16;
+      _._long_sha2_family_digest$_wordBuffer = t17;
+      _._wordBufferOffset = 0;
+      _._W = t18;
+      _._wOff = 0;
+      _._byteCount1 = t19;
+      _._byteCount2 = t20;
+    },
+    SHA512tDigest_closure: function SHA512tDigest_closure() {
+    },
+    SHA512tDigest__closure: function SHA512tDigest__closure(t0) {
+      this.match = t0;
+    },
+    ECCurve_brainpoolp384t1__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new D.ECCurve_brainpoolp384t1($G, n, _h);
+    },
+    ECCurve_brainpoolp384t1: function ECCurve_brainpoolp384t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
+    },
+    ECCurve_brainpoolp384t1_closure: function ECCurve_brainpoolp384t1_closure() {
+    },
+    ECCurve_secp192k1__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new D.ECCurve_secp192k1($G, n, _h);
+    },
+    ECCurve_secp192k1: function ECCurve_secp192k1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
+    },
+    ECCurve_secp192k1_closure: function ECCurve_secp192k1_closure() {
     }
   },
   Y = {
@@ -3989,28 +4067,34 @@
     },
     ECCurve_brainpoolp160t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Y.ECCurve_brainpoolp160t1(_h);
+      return new Y.ECCurve_brainpoolp160t1($G, n, _h);
     },
-    ECCurve_brainpoolp160t1: function ECCurve_brainpoolp160t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp160t1: function ECCurve_brainpoolp160t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp160t1_closure: function ECCurve_brainpoolp160t1_closure() {
     },
     ECCurve_brainpoolp512r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Y.ECCurve_brainpoolp512r1(_h);
+      return new Y.ECCurve_brainpoolp512r1($G, n, _h);
     },
-    ECCurve_brainpoolp512r1: function ECCurve_brainpoolp512r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp512r1: function ECCurve_brainpoolp512r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp512r1_closure: function ECCurve_brainpoolp512r1_closure() {
     },
     ECCurve_secp128r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Y.ECCurve_secp128r1(_h);
+      return new Y.ECCurve_secp128r1($G, n, _h);
     },
-    ECCurve_secp128r1: function ECCurve_secp128r1(t0) {
-      this._h = t0;
+    ECCurve_secp128r1: function ECCurve_secp128r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp128r1_closure: function ECCurve_secp128r1_closure() {
     },
@@ -4108,146 +4192,38 @@
     },
     ECCurve_gostr3410_2001_cryptopro_b__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new X.ECCurve_gostr3410_2001_cryptopro_b(_h);
+      return new X.ECCurve_gostr3410_2001_cryptopro_b($G, n, _h);
     },
-    ECCurve_gostr3410_2001_cryptopro_b: function ECCurve_gostr3410_2001_cryptopro_b(t0) {
-      this._h = t0;
+    ECCurve_gostr3410_2001_cryptopro_b: function ECCurve_gostr3410_2001_cryptopro_b(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_gostr3410_2001_cryptopro_b_closure: function ECCurve_gostr3410_2001_cryptopro_b_closure() {
     },
     ECCurve_secp112r2__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new X.ECCurve_secp112r2(_h);
+      return new X.ECCurve_secp112r2($G, n, _h);
     },
-    ECCurve_secp112r2: function ECCurve_secp112r2(t0) {
-      this._h = t0;
+    ECCurve_secp112r2: function ECCurve_secp112r2(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp112r2_closure: function ECCurve_secp112r2_closure() {
     },
     ECCurve_secp128r2__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new X.ECCurve_secp128r2(_h);
+      return new X.ECCurve_secp128r2($G, n, _h);
     },
-    ECCurve_secp128r2: function ECCurve_secp128r2(t0) {
-      this._h = t0;
+    ECCurve_secp128r2: function ECCurve_secp128r2(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp128r2_closure: function ECCurve_secp128r2_closure() {
     },
-    _lbit: function(x) {
-      var r,
-        t1 = $.$get$_BigIntImpl_zero();
-      if (J.$eq$(x, t1))
-        return -1;
-      for (r = 0; J.$eq$(x.$and(0, P._BigIntImpl__BigIntImpl$from(4294967295)), t1);) {
-        x = x.$shr(0, 32);
-        r += 32;
-      }
-      if (J.$eq$(x.$and(0, P._BigIntImpl__BigIntImpl$from(65535)), t1)) {
-        x = x.$shr(0, 16);
-        r += 16;
-      }
-      if (J.$eq$(x.$and(0, P._BigIntImpl__BigIntImpl$from(255)), t1)) {
-        x = x.$shr(0, 8);
-        r += 8;
-      }
-      if (J.$eq$(x.$and(0, P._BigIntImpl__BigIntImpl$from(15)), t1)) {
-        x = x.$shr(0, 4);
-        r += 4;
-      }
-      if (J.$eq$(x.$and(0, P._BigIntImpl__BigIntImpl$from(3)), t1)) {
-        x = x.$shr(0, 2);
-        r += 2;
-      }
-      return J.$eq$(x.$and(0, $.$get$_BigIntImpl_one()), t1) ? r + 1 : r;
-    },
-    _millerRabin: function(b, t) {
-      var r, i, y, j, j0,
-        t1 = $.$get$_BigIntImpl_one(),
-        n1 = b.$sub(0, t1),
-        k = X._lbit(n1);
-      if (k <= 0)
-        return false;
-      r = n1.$shr(0, k);
-      t = t + 1 >>> 1;
-      $.$get$_lowprimes();
-      if (t > 97)
-        t = 97;
-      for (i = 0; i < t; ++i) {
-        y = $.$get$_lowprimes()[i].modPow$2(0, r, b);
-        if (y.compareTo$1(0, t1) !== 0 && y.compareTo$1(0, n1) !== 0) {
-          j = 1;
-          while (true) {
-            j0 = j + 1;
-            if (!(j < k && y.compareTo$1(0, n1) !== 0))
-              break;
-            y = y.modPow$2(0, $.$get$_bigTwo(), b);
-            if (y.compareTo$1(0, t1) === 0)
-              return false;
-            j = j0;
-          }
-          if (y.compareTo$1(0, n1) !== 0)
-            return false;
-        }
-      }
-      return true;
-    },
-    _isProbablePrime: function(b, t) {
-      var i, m, j, j0, i0,
-        x = b._isNegative ? b.$negate(0) : b,
-        t1 = $.$get$_lowprimes();
-      if (b.compareTo$1(0, C.JSArray_methods.get$last(t1)) <= 0) {
-        for (i = 0; i < 97; ++i)
-          if (b.$eq(0, t1[i]))
-            return true;
-        return false;
-      }
-      if (x.get$isEven(x))
-        return false;
-      for (i = 1; i < 97;) {
-        if (i < 0)
-          return H.ioore(t1, i);
-        m = t1[i];
-        j = i + 1;
-        while (true) {
-          if (!(j < 97 && m.compareTo$1(0, $.$get$_lplim()) < 0))
-            break;
-          j0 = j + 1;
-          if (j >= 97)
-            return H.ioore(t1, j);
-          m = m.$mul(0, t1[j]);
-          j = j0;
-        }
-        m = x.$mod(0, m);
-        for (; i < j; i = i0) {
-          i0 = i + 1;
-          if (i >= 97)
-            return H.ioore(t1, i);
-          if (J.$eq$(m.$mod(0, t1[i]), 0))
-            return false;
-        }
-      }
-      return X._millerRabin(x, t);
-    },
-    generateProbablePrime: function(bitLength, certainty, rnd) {
-      var candidate, t1, t2;
-      if (bitLength < 2)
-        return $.$get$_BigIntImpl_one();
-      candidate = rnd.nextBigInteger$1(bitLength);
-      t1 = bitLength - 1;
-      t2 = $.$get$_BigIntImpl_one();
-      if (J.$eq$(candidate.$and(0, t2.$shl(0, t1)), $.$get$_BigIntImpl_zero()))
-        candidate = candidate.$or(0, t2.$shl(0, t1));
-      if (candidate.get$isEven(candidate))
-        candidate = candidate.$add(0, t2);
-      for (; !X._isProbablePrime(candidate, certainty);) {
-        candidate = candidate.$add(0, $.$get$_bigTwo());
-        if (candidate.get$bitLength(candidate) > bitLength)
-          candidate = candidate.$sub(0, $.$get$_BigIntImpl_one().$shl(0, t1));
-      }
-      return candidate;
-    },
     RSAKeyGenerator: function RSAKeyGenerator() {
-      this._params = this._random = null;
     },
     RSAKeyGenerator_closure: function RSAKeyGenerator_closure() {
     },
@@ -4336,10 +4312,12 @@
     },
     ECCurve_brainpoolp512t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new N.ECCurve_brainpoolp512t1(_h);
+      return new N.ECCurve_brainpoolp512t1($G, n, _h);
     },
-    ECCurve_brainpoolp512t1: function ECCurve_brainpoolp512t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp512t1: function ECCurve_brainpoolp512t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp512t1_closure: function ECCurve_brainpoolp512t1_closure() {
     },
@@ -4353,17 +4331,75 @@
       this.digestIdentifierHex = t1;
     }
   },
-  M = {RSAAsymmetricKey: function RSAAsymmetricKey() {
-    }, RSAPrivateKey: function RSAPrivateKey(t0, t1, t2, t3) {
+  B = {
+    CBCBlockCipher$: function(_underlyingCipher) {
+      var t1 = new B.CBCBlockCipher(_underlyingCipher),
+        t2 = _underlyingCipher.get$blockSize();
+      t1._IV = new Uint8Array(t2);
+      t2 = _underlyingCipher.get$blockSize();
+      t1._cbcV = new Uint8Array(t2);
+      t2 = _underlyingCipher.get$blockSize();
+      t1._cbcNextV = new Uint8Array(t2);
+      return t1;
+    },
+    CBCBlockCipher: function CBCBlockCipher(t0) {
       var _ = this;
-      _.p = t0;
-      _.q = t1;
-      _.modulus = t2;
-      _.exponent = t3;
-    }, RSAPublicKey: function RSAPublicKey(t0, t1) {
-      this.modulus = t0;
-      this.exponent = t1;
-    }, CTRBlockCipher: function CTRBlockCipher(t0, t1) {
+      _._underlyingCipher = t0;
+      _._encrypting = _._cbcNextV = _._cbcV = _._IV = null;
+    },
+    CBCBlockCipher_closure: function CBCBlockCipher_closure() {
+    },
+    CBCBlockCipher__closure: function CBCBlockCipher__closure(t0) {
+      this.match = t0;
+    },
+    CFBBlockCipher: function CFBBlockCipher(t0, t1) {
+      var _ = this;
+      _.blockSize = t0;
+      _._cfb$_underlyingCipher = t1;
+      _._cfb$_encrypting = _._cfbOutV = _._cfbV = _._cfb$_IV = null;
+    },
+    CFBBlockCipher_closure: function CFBBlockCipher_closure() {
+    },
+    CFBBlockCipher__closure: function CFBBlockCipher__closure(t0) {
+      this.match = t0;
+    },
+    RIPEMD128Digest: function RIPEMD128Digest(t0, t1, t2, t3, t4, t5) {
+      var _ = this;
+      _._md4_family_digest$_byteCount = t0;
+      _._md4_family_digest$_wordBuffer = t1;
+      _._md4_family_digest$_wordBufferOffset = null;
+      _._endian = t2;
+      _._packedStateSize = t3;
+      _.state = t4;
+      _.buffer = t5;
+      _.bufferOffset = null;
+    },
+    RIPEMD128Digest_closure: function RIPEMD128Digest_closure() {
+    },
+    ECCurve_prime239v2__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new B.ECCurve_prime239v2($G, n, _h);
+    },
+    ECCurve_prime239v2: function ECCurve_prime239v2(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
+    },
+    ECCurve_prime239v2_closure: function ECCurve_prime239v2_closure() {
+    },
+    ECCurve_prime239v3__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new B.ECCurve_prime239v3($G, n, _h);
+    },
+    ECCurve_prime239v3: function ECCurve_prime239v3(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
+    },
+    ECCurve_prime239v3_closure: function ECCurve_prime239v3_closure() {
+    }
+  },
+  M = {CTRBlockCipher: function CTRBlockCipher(t0, t1) {
       this.streamCipher = t0;
       this.blockSize = t1;
     }, CTRBlockCipher_closure: function CTRBlockCipher_closure() {
@@ -4411,50 +4447,60 @@
     },
     ECCurve_brainpoolp224r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new M.ECCurve_brainpoolp224r1(_h);
+      return new M.ECCurve_brainpoolp224r1($G, n, _h);
     },
-    ECCurve_brainpoolp224r1: function ECCurve_brainpoolp224r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp224r1: function ECCurve_brainpoolp224r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp224r1_closure: function ECCurve_brainpoolp224r1_closure() {
     },
     ECCurve_gostr3410_2001_cryptopro_c__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new M.ECCurve_gostr3410_2001_cryptopro_c(_h);
+      return new M.ECCurve_gostr3410_2001_cryptopro_c($G, n, _h);
     },
-    ECCurve_gostr3410_2001_cryptopro_c: function ECCurve_gostr3410_2001_cryptopro_c(t0) {
-      this._h = t0;
+    ECCurve_gostr3410_2001_cryptopro_c: function ECCurve_gostr3410_2001_cryptopro_c(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_gostr3410_2001_cryptopro_c_closure: function ECCurve_gostr3410_2001_cryptopro_c_closure() {
     },
     ECCurve_prime192v2__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new M.ECCurve_prime192v2(_h);
+      return new M.ECCurve_prime192v2($G, n, _h);
     },
-    ECCurve_prime192v2: function ECCurve_prime192v2(t0) {
-      this._h = t0;
+    ECCurve_prime192v2: function ECCurve_prime192v2(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_prime192v2_closure: function ECCurve_prime192v2_closure() {
     },
     ECCurve_secp160r2__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new M.ECCurve_secp160r2(_h);
+      return new M.ECCurve_secp160r2($G, n, _h);
     },
-    ECCurve_secp160r2: function ECCurve_secp160r2(t0) {
-      this._h = t0;
+    ECCurve_secp160r2: function ECCurve_secp160r2(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp160r2_closure: function ECCurve_secp160r2_closure() {
     },
     ECCurve_secp224k1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new M.ECCurve_secp224k1(_h);
+      return new M.ECCurve_secp224k1($G, n, _h);
     },
-    ECCurve_secp224k1: function ECCurve_secp224k1(t0) {
-      this._h = t0;
+    ECCurve_secp224k1: function ECCurve_secp224k1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp224k1_closure: function ECCurve_secp224k1_closure() {
     },
-    _lbit0: function(x) {
+    _lbit: function(x) {
       var r,
         t1 = $.$get$_BigIntImpl_zero();
       if (x.$eq(0, t1))
@@ -4497,25 +4543,28 @@
       return new M.ECPoint0(curve, x, y, withCompression, M.ecc_fp___WNafMultiplier$closure());
     },
     _WNafMultiplier: function(p, k, preCompInfo) {
-      var width, reqPreCompLen, preComp, twiceP, preCompLen, t1, preComp0, i, t2, wnaf, q,
-        wnafPreCompInfo = preCompInfo == null && !(preCompInfo instanceof M._WNafPreCompInfo) ? new M._WNafPreCompInfo() : preCompInfo,
-        m = k.get$bitLength(k);
-      if (m.$lt(0, 13)) {
+      var wnafPreCompInfo, m, width, reqPreCompLen, preComp, twiceP, preCompLen, t1, preComp0, i, t2, wnaf, q;
+      H.interceptedTypeCheck(p, "$isECPointBase");
+      H.interceptedTypeCheck(k, "$isBigInt");
+      H.interceptedTypeCheck(preCompInfo, "$isPreCompInfo");
+      wnafPreCompInfo = preCompInfo == null && !(preCompInfo instanceof M._WNafPreCompInfo) ? new M._WNafPreCompInfo() : preCompInfo;
+      m = k.get$bitLength(k);
+      if (m < 13) {
         width = 2;
         reqPreCompLen = 1;
-      } else if (m.$lt(0, 41)) {
+      } else if (m < 41) {
         width = 3;
         reqPreCompLen = 2;
-      } else if (m.$lt(0, 121)) {
+      } else if (m < 121) {
         width = 4;
         reqPreCompLen = 4;
-      } else if (m.$lt(0, 337)) {
+      } else if (m < 337) {
         width = 5;
         reqPreCompLen = 8;
-      } else if (m.$lt(0, 897)) {
+      } else if (m < 897) {
         width = 6;
         reqPreCompLen = 16;
-      } else if (m.$lt(0, 2305)) {
+      } else if (m < 2305) {
         width = 7;
         reqPreCompLen = 32;
       } else {
@@ -4572,34 +4621,40 @@
       return q;
     },
     _windowNaf: function(width, k) {
-      var t2, wnaf, pow2wB, pow2wBI, t3, i, $length, t4, remainder, i0, wnafShort,
-        t1 = new Array(k.get$bitLength(k).$add(0, 1));
+      var t2, wnaf, pow2wB, pow2wBI, t3, i, $length, t4, t5, t6, remainder, wnafShort,
+        t1 = new Array(k.get$bitLength(k) + 1);
       t1.fixed$length = Array;
       t2 = [P.int];
       wnaf = H.setRuntimeTypeInfo(t1, t2);
       pow2wB = C.JSInt_methods._shlPositive$1(1, width);
       pow2wBI = P._BigIntImpl__BigIntImpl$from(pow2wB);
-      for (t1 = wnaf.length, t3 = width - 1, i = 0, $length = 0; k.get$sign(k).$gt(0, 0); $length = i, i = i0) {
+      for (t1 = wnaf.length, t3 = width - 1, i = 0, $length = 0; k.get$sign(k) > 0;) {
         t4 = $.$get$_BigIntImpl_one();
-        k.$and(0, t4.$shl(0, 0));
-        $.$get$_BigIntImpl_zero();
-        remainder = k.$mod(0, pow2wBI);
-        remainder.$and(0, t4.$shl(0, t3));
-        C.JSArray_methods.$indexSet(wnaf, i, remainder.toInt$0(0).$sub(0, pow2wB));
-        if (i >= t1)
-          return H.ioore(wnaf, i);
-        t4 = wnaf[i];
-        if (typeof t4 !== "number")
-          return t4.$mod();
-        C.JSArray_methods.$indexSet(wnaf, i, C.JSInt_methods.$mod(t4, 256));
-        t4 = wnaf[i];
-        if (typeof t4 !== "number")
-          return t4.$and();
-        if ((t4 & 128) !== 0)
-          C.JSArray_methods.$indexSet(wnaf, i, t4 - 256);
-        k = k.$sub(0, P._BigIntImpl__BigIntImpl$from(wnaf[i]));
+        t5 = k.$and(0, t4.$shl(0, 0));
+        t6 = $.$get$_BigIntImpl_zero();
+        if (!J.$eq$(t5, t6)) {
+          remainder = k.$mod(0, pow2wBI);
+          if (!J.$eq$(remainder.$and(0, t4.$shl(0, t3)), t6))
+            C.JSArray_methods.$indexSet(wnaf, i, remainder.toInt$0(0) - pow2wB);
+          else
+            C.JSArray_methods.$indexSet(wnaf, i, remainder.toInt$0(0));
+          if (i >= t1)
+            return H.ioore(wnaf, i);
+          t4 = wnaf[i];
+          if (typeof t4 !== "number")
+            return t4.$mod();
+          C.JSArray_methods.$indexSet(wnaf, i, C.JSInt_methods.$mod(t4, 256));
+          t4 = wnaf[i];
+          if (typeof t4 !== "number")
+            return t4.$and();
+          if ((t4 & 128) !== 0)
+            C.JSArray_methods.$indexSet(wnaf, i, t4 - 256);
+          k = k.$sub(0, P._BigIntImpl__BigIntImpl$from(wnaf[i]));
+          $length = i;
+        } else
+          C.JSArray_methods.$indexSet(wnaf, i, 0);
         k = k.$shr(0, 1);
-        i0 = i + 1;
+        ++i;
       }
       ++$length;
       t1 = new Array($length);
@@ -4607,6 +4662,19 @@
       wnafShort = H.setRuntimeTypeInfo(t1, t2);
       C.JSArray_methods.setAll$2(wnafShort, 0, C.JSArray_methods.sublist$2(wnaf, 0, $length));
       return wnafShort;
+    },
+    _x9IntegerToBytes: function(s, qLength) {
+      var t2,
+        bytes = new Uint8Array(H._ensureNativeList(L.encodeBigInt(s))),
+        t1 = bytes.length;
+      if (qLength < t1)
+        return C.NativeUint8List_methods.sublist$1(bytes, t1 - qLength);
+      else if (qLength > t1) {
+        t2 = new Uint8Array(qLength);
+        C.NativeUint8List_methods.setAll$2(t2, qLength - t1, bytes);
+        return t2;
+      }
+      return bytes;
     },
     ECFieldElement: function ECFieldElement(t0, t1) {
       this.q = t0;
@@ -4630,196 +4698,6 @@
       this.twiceP = this.preComp = null;
     }
   },
-  A = {OAEPEncoding: function OAEPEncoding(t0, t1) {
-      this.hash = t0;
-      this.defHash = t1;
-    }, OAEPEncoding_closure: function OAEPEncoding_closure() {
-    }, OAEPEncoding__closure: function OAEPEncoding__closure(t0) {
-      this.match = t0;
-    },
-    ECCurve_gostr3410_2001_cryptopro_xchb__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new A.ECCurve_gostr3410_2001_cryptopro_xchb(_h);
-    },
-    ECCurve_gostr3410_2001_cryptopro_xchb: function ECCurve_gostr3410_2001_cryptopro_xchb(t0) {
-      this._h = t0;
-    },
-    ECCurve_gostr3410_2001_cryptopro_xchb_closure: function ECCurve_gostr3410_2001_cryptopro_xchb_closure() {
-    },
-    Salsa20Engine: function Salsa20Engine(t0, t1, t2) {
-      var _ = this;
-      _._workingIV = _._workingKey = null;
-      _._salsa20$_state = t0;
-      _._buffer = t1;
-      _._keyStream = t2;
-      _._keyStreamOffset = 0;
-      _._initialised = false;
-    },
-    Salsa20Engine_closure: function Salsa20Engine_closure() {
-    },
-    generateRandomString: function(strlen) {
-      var i, t1,
-        rnd = $.Random__secureRandom;
-      if (rnd == null)
-        rnd = $.Random__secureRandom = P._JSSecureRandom$();
-      if (typeof strlen !== "number")
-        return H.iae(strlen);
-      i = 0;
-      t1 = "";
-      for (; i < strlen; ++i)
-        t1 += H.Primitives_stringFromCharCode(C.JSString_methods._codeUnitAt$1(C.JSString_methods.$index("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", rnd.nextInt$1(62)), 0));
-      return t1.charCodeAt(0) == 0 ? t1 : t1;
-    }
-  },
-  D = {
-    _subWord: function(x) {
-      return ($._S[x & 255] & 255 | ($._S[C.JSInt_methods._shrOtherPositive$1(x, 8) & 255] & 255) << 8 | ($._S[C.JSInt_methods._shrOtherPositive$1(x, 16) & 255] & 255) << 16 | $._S[C.JSInt_methods._shrOtherPositive$1(x, 24) & 255] << 24) >>> 0;
-    },
-    AESFastEngine: function AESFastEngine() {
-      var _ = this;
-      _._C3 = _._C2 = _._C1 = _._C0 = _._ROUNDS = _._aes_fast$_workingKey = _._forEncryption = null;
-    },
-    AESFastEngine_closure: function AESFastEngine_closure() {
-    },
-    AESFastEngine_init_closure: function AESFastEngine_init_closure() {
-    },
-    RIPEMD160Digest: function RIPEMD160Digest(t0, t1, t2, t3, t4, t5) {
-      var _ = this;
-      _._md4_family_digest$_byteCount = t0;
-      _._md4_family_digest$_wordBuffer = t1;
-      _._md4_family_digest$_wordBufferOffset = null;
-      _._endian = t2;
-      _._packedStateSize = t3;
-      _.state = t4;
-      _.buffer = t5;
-      _.bufferOffset = null;
-    },
-    RIPEMD160Digest_closure: function RIPEMD160Digest_closure() {
-    },
-    SHA3Digest: function SHA3Digest(t0, t1) {
-      this._fixedOutputLength = null;
-      this._sha3$_state = t0;
-      this._dataQueue = t1;
-    },
-    SHA3Digest_closure: function SHA3Digest_closure() {
-    },
-    SHA3Digest__closure: function SHA3Digest__closure(t0) {
-      this.match = t0;
-    },
-    SHA512tDigest: function SHA512tDigest(t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t20) {
-      var _ = this;
-      _.digestSize = t0;
-      _._H1t = t1;
-      _._H2t = t2;
-      _._H3t = t3;
-      _._H4t = t4;
-      _._H5t = t5;
-      _._H6t = t6;
-      _._H7t = t7;
-      _._H8t = t8;
-      _.H1 = t9;
-      _.H2 = t10;
-      _.H3 = t11;
-      _.H4 = t12;
-      _.H5 = t13;
-      _.H6 = t14;
-      _.H7 = t15;
-      _.H8 = t16;
-      _._long_sha2_family_digest$_wordBuffer = t17;
-      _._wordBufferOffset = 0;
-      _._W = t18;
-      _._wOff = 0;
-      _._byteCount1 = t19;
-      _._byteCount2 = t20;
-    },
-    SHA512tDigest_closure: function SHA512tDigest_closure() {
-    },
-    SHA512tDigest__closure: function SHA512tDigest__closure(t0) {
-      this.match = t0;
-    },
-    ECCurve_brainpoolp384t1__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new D.ECCurve_brainpoolp384t1(_h);
-    },
-    ECCurve_brainpoolp384t1: function ECCurve_brainpoolp384t1(t0) {
-      this._h = t0;
-    },
-    ECCurve_brainpoolp384t1_closure: function ECCurve_brainpoolp384t1_closure() {
-    },
-    ECCurve_secp192k1__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new D.ECCurve_secp192k1(_h);
-    },
-    ECCurve_secp192k1: function ECCurve_secp192k1(t0) {
-      this._h = t0;
-    },
-    ECCurve_secp192k1_closure: function ECCurve_secp192k1_closure() {
-    }
-  },
-  B = {
-    CBCBlockCipher$: function(_underlyingCipher) {
-      var t1 = new B.CBCBlockCipher(_underlyingCipher),
-        t2 = _underlyingCipher.get$blockSize();
-      t1._IV = new Uint8Array(t2);
-      t2 = _underlyingCipher.get$blockSize();
-      t1._cbcV = new Uint8Array(t2);
-      t2 = _underlyingCipher.get$blockSize();
-      t1._cbcNextV = new Uint8Array(t2);
-      return t1;
-    },
-    CBCBlockCipher: function CBCBlockCipher(t0) {
-      var _ = this;
-      _._underlyingCipher = t0;
-      _._encrypting = _._cbcNextV = _._cbcV = _._IV = null;
-    },
-    CBCBlockCipher_closure: function CBCBlockCipher_closure() {
-    },
-    CBCBlockCipher__closure: function CBCBlockCipher__closure(t0) {
-      this.match = t0;
-    },
-    CFBBlockCipher: function CFBBlockCipher(t0, t1) {
-      var _ = this;
-      _.blockSize = t0;
-      _._cfb$_underlyingCipher = t1;
-      _._cfb$_encrypting = _._cfbOutV = _._cfbV = _._cfb$_IV = null;
-    },
-    CFBBlockCipher_closure: function CFBBlockCipher_closure() {
-    },
-    CFBBlockCipher__closure: function CFBBlockCipher__closure(t0) {
-      this.match = t0;
-    },
-    RIPEMD128Digest: function RIPEMD128Digest(t0, t1, t2, t3, t4, t5) {
-      var _ = this;
-      _._md4_family_digest$_byteCount = t0;
-      _._md4_family_digest$_wordBuffer = t1;
-      _._md4_family_digest$_wordBufferOffset = null;
-      _._endian = t2;
-      _._packedStateSize = t3;
-      _.state = t4;
-      _.buffer = t5;
-      _.bufferOffset = null;
-    },
-    RIPEMD128Digest_closure: function RIPEMD128Digest_closure() {
-    },
-    ECCurve_prime239v2__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new B.ECCurve_prime239v2(_h);
-    },
-    ECCurve_prime239v2: function ECCurve_prime239v2(t0) {
-      this._h = t0;
-    },
-    ECCurve_prime239v2_closure: function ECCurve_prime239v2_closure() {
-    },
-    ECCurve_prime239v3__make: function(domainName, curve, $G, n, _h, seed) {
-      H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new B.ECCurve_prime239v3(_h);
-    },
-    ECCurve_prime239v3: function ECCurve_prime239v3(t0) {
-      this._h = t0;
-    },
-    ECCurve_prime239v3_closure: function ECCurve_prime239v3_closure() {
-    }
-  },
   F = {ECBBlockCipher: function ECBBlockCipher(t0) {
       this._ecb$_underlyingCipher = t0;
     }, ECBBlockCipher_closure: function ECBBlockCipher_closure() {
@@ -4840,10 +4718,12 @@
     },
     ECCurve_prime239v1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new F.ECCurve_prime239v1(_h);
+      return new F.ECCurve_prime239v1($G, n, _h);
     },
-    ECCurve_prime239v1: function ECCurve_prime239v1(t0) {
-      this._h = t0;
+    ECCurve_prime239v1: function ECCurve_prime239v1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_prime239v1_closure: function ECCurve_prime239v1_closure() {
     },
@@ -4931,28 +4811,34 @@
     },
     ECCurve_brainpoolp160r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new T.ECCurve_brainpoolp160r1(_h);
+      return new T.ECCurve_brainpoolp160r1($G, n, _h);
     },
-    ECCurve_brainpoolp160r1: function ECCurve_brainpoolp160r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp160r1: function ECCurve_brainpoolp160r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp160r1_closure: function ECCurve_brainpoolp160r1_closure() {
     },
     ECCurve_brainpoolp384r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new T.ECCurve_brainpoolp384r1(_h);
+      return new T.ECCurve_brainpoolp384r1($G, n, _h);
     },
-    ECCurve_brainpoolp384r1: function ECCurve_brainpoolp384r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp384r1: function ECCurve_brainpoolp384r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp384r1_closure: function ECCurve_brainpoolp384r1_closure() {
     },
     ECCurve_prime192v1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new T.ECCurve_prime192v1(_h);
+      return new T.ECCurve_prime192v1($G, n, _h);
     },
-    ECCurve_prime192v1: function ECCurve_prime192v1(t0) {
-      this._h = t0;
+    ECCurve_prime192v1: function ECCurve_prime192v1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_prime192v1_closure: function ECCurve_prime192v1_closure() {
     }
@@ -4968,37 +4854,53 @@
     },
     ECCurve_brainpoolp192r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Z.ECCurve_brainpoolp192r1(_h);
+      return new Z.ECCurve_brainpoolp192r1($G, n, _h);
     },
-    ECCurve_brainpoolp192r1: function ECCurve_brainpoolp192r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp192r1: function ECCurve_brainpoolp192r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp192r1_closure: function ECCurve_brainpoolp192r1_closure() {
     },
     ECCurve_gostr3410_2001_cryptopro_xcha__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Z.ECCurve_gostr3410_2001_cryptopro_xcha(_h);
+      return new Z.ECCurve_gostr3410_2001_cryptopro_xcha($G, n, _h);
     },
-    ECCurve_gostr3410_2001_cryptopro_xcha: function ECCurve_gostr3410_2001_cryptopro_xcha(t0) {
-      this._h = t0;
+    ECCurve_gostr3410_2001_cryptopro_xcha: function ECCurve_gostr3410_2001_cryptopro_xcha(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_gostr3410_2001_cryptopro_xcha_closure: function ECCurve_gostr3410_2001_cryptopro_xcha_closure() {
     },
+    ECCurve_prime256v1_ECCurve_prime256v1: function() {
+      var t1 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000ffffffffffffffffffffffff", 16),
+        t2 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000fffffffffffffffffffffffc", 16),
+        t3 = P._BigIntImpl_parse("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16),
+        t4 = P._BigIntImpl_parse("036b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
+        t5 = P._BigIntImpl_parse("ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 16);
+      return H.interceptedTypeCheck(F.constructFpStandardCurve("prime256v1", Z.prime256v1_ECCurve_prime256v1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("c49d360886e704936a6678e1139d26b7819f7e90", 16)), "$isECCurve_prime256v1");
+    },
     ECCurve_prime256v1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Z.ECCurve_prime256v1(_h);
+      return new Z.ECCurve_prime256v1($G, n, _h);
     },
-    ECCurve_prime256v1: function ECCurve_prime256v1(t0) {
-      this._h = t0;
+    ECCurve_prime256v1: function ECCurve_prime256v1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_prime256v1_closure: function ECCurve_prime256v1_closure() {
     },
     ECCurve_secp160r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Z.ECCurve_secp160r1(_h);
+      return new Z.ECCurve_secp160r1($G, n, _h);
     },
-    ECCurve_secp160r1: function ECCurve_secp160r1(t0) {
-      this._h = t0;
+    ECCurve_secp160r1: function ECCurve_secp160r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp160r1_closure: function ECCurve_secp160r1_closure() {
     },
@@ -5035,10 +4937,12 @@
     },
     ECCurve_secp384r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new S.ECCurve_secp384r1(_h);
+      return new S.ECCurve_secp384r1($G, n, _h);
     },
-    ECCurve_secp384r1: function ECCurve_secp384r1(t0) {
-      this._h = t0;
+    ECCurve_secp384r1: function ECCurve_secp384r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp384r1_closure: function ECCurve_secp384r1_closure() {
     },
@@ -5055,10 +4959,12 @@
     },
     ECCurve_secp224r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new V.ECCurve_secp224r1(_h);
+      return new V.ECCurve_secp224r1($G, n, _h);
     },
-    ECCurve_secp224r1: function ECCurve_secp224r1(t0) {
-      this._h = t0;
+    ECCurve_secp224r1: function ECCurve_secp224r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp224r1_closure: function ECCurve_secp224r1_closure() {
     },
@@ -5137,50 +5043,145 @@
       _._byteCount2 = t11;
     }, SHA512Digest_closure: function SHA512Digest_closure() {
     }},
+  R = {TigerDigest: function TigerDigest(t0, t1, t2, t3, t4, t5) {
+      var _ = this;
+      _._tiger$_a = t0;
+      _._tiger$_b = t1;
+      _._c = t2;
+      _._byteCount = t3;
+      _._wordBuffer = t4;
+      _._tiger$_buffer = t5;
+    }, TigerDigest_closure: function TigerDigest_closure() {
+    },
+    ECCurve_secp521r1__make: function(domainName, curve, $G, n, _h, seed) {
+      H.assertSubtype(seed, "$isList", [P.int], "$asList");
+      return new R.ECCurve_secp521r1($G, n, _h);
+    },
+    ECCurve_secp521r1: function ECCurve_secp521r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
+    },
+    ECCurve_secp521r1_closure: function ECCurve_secp521r1_closure() {
+    },
+    CMac: function CMac(t0, t1) {
+      this._cipher = t0;
+      this._cmac$_macSize = t1;
+    },
+    CMac_closure: function CMac_closure() {
+    },
+    CMac__closure: function CMac__closure(t0) {
+      this.match = t0;
+    },
+    PKCS7Padding: function PKCS7Padding() {
+    },
+    PKCS7Padding_closure: function PKCS7Padding_closure() {
+    },
+    BaseStreamCipher: function BaseStreamCipher() {
+    },
+    SecureRandomBase: function SecureRandomBase() {
+    },
+    StaticFactoryConfig$: function(type, algorithmName, factory) {
+      return new R.StaticFactoryConfig(algorithmName, factory, type);
+    },
+    _escapeRegExp: function(str) {
+      return H.stringReplaceAllFuncUnchecked(str, $.$get$_specialRegExpChars(), H.functionTypeCheck(new R._escapeRegExp_closure(), {func: 1, ret: P.String, args: [P.Match]}), H.functionTypeCheck(new R._escapeRegExp_closure0(), {func: 1, ret: P.String, args: [P.String]}));
+    },
+    DynamicFactoryConfig$: function(type, regExp, factory) {
+      return new R.DynamicFactoryConfig(regExp, factory, type);
+    },
+    DynamicFactoryConfig$regex: function(type, regexString, factory) {
+      return new R.DynamicFactoryConfig(P.RegExp_RegExp(regexString, true), factory, type);
+    },
+    DynamicFactoryConfig$suffix: function(type, suffix, factory) {
+      return new R.DynamicFactoryConfig(P.RegExp_RegExp("^(.+)" + R._escapeRegExp(suffix) + "$", true), factory, type);
+    },
+    FactoryConfig: function FactoryConfig() {
+    },
+    StaticFactoryConfig: function StaticFactoryConfig(t0, t1, t2) {
+      this.algorithmName = t0;
+      this.factory = t1;
+      this.type = t2;
+    },
+    _escapeRegExp_closure: function _escapeRegExp_closure() {
+    },
+    _escapeRegExp_closure0: function _escapeRegExp_closure0() {
+    },
+    DynamicFactoryConfig: function DynamicFactoryConfig(t0, t1, t2) {
+      this.regExp = t0;
+      this.factory = t1;
+      this.type = t2;
+    },
+    _RegistryImpl: function _RegistryImpl(t0, t1, t2) {
+      var _ = this;
+      _._staticFactories = t0;
+      _._dynamicFactories = t1;
+      _._constructorCache = t2;
+      _._initialized = false;
+    },
+    _RegistryImpl__addStaticFactoryConfig_closure: function _RegistryImpl__addStaticFactoryConfig_closure() {
+    },
+    _RegistryImpl__addDynamicFactoryConfig_closure: function _RegistryImpl__addDynamicFactoryConfig_closure() {
+    }
+  },
   G = {ECDomainParameters: function ECDomainParameters() {
+    }, ECAsymmetricKey: function ECAsymmetricKey() {
+    }, ECPrivateKey: function ECPrivateKey(t0, t1) {
+      this.d = t0;
+      this.parameters = t1;
+    }, ECPublicKey: function ECPublicKey(t0, t1) {
+      this.Q = t0;
+      this.parameters = t1;
     },
     ECCurve_brainpoolp320r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new G.ECCurve_brainpoolp320r1(_h);
+      return new G.ECCurve_brainpoolp320r1($G, n, _h);
     },
-    ECCurve_brainpoolp320r1: function ECCurve_brainpoolp320r1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp320r1: function ECCurve_brainpoolp320r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp320r1_closure: function ECCurve_brainpoolp320r1_closure() {
     },
     ECCurve_brainpoolp320t1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new G.ECCurve_brainpoolp320t1(_h);
+      return new G.ECCurve_brainpoolp320t1($G, n, _h);
     },
-    ECCurve_brainpoolp320t1: function ECCurve_brainpoolp320t1(t0) {
-      this._h = t0;
+    ECCurve_brainpoolp320t1: function ECCurve_brainpoolp320t1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_brainpoolp320t1_closure: function ECCurve_brainpoolp320t1_closure() {
     },
     ECCurve_gostr3410_2001_cryptopro_a__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new G.ECCurve_gostr3410_2001_cryptopro_a(_h);
+      return new G.ECCurve_gostr3410_2001_cryptopro_a($G, n, _h);
     },
-    ECCurve_gostr3410_2001_cryptopro_a: function ECCurve_gostr3410_2001_cryptopro_a(t0) {
-      this._h = t0;
+    ECCurve_gostr3410_2001_cryptopro_a: function ECCurve_gostr3410_2001_cryptopro_a(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_gostr3410_2001_cryptopro_a_closure: function ECCurve_gostr3410_2001_cryptopro_a_closure() {
     },
     ECCurve_secp112r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new G.ECCurve_secp112r1(_h);
+      return new G.ECCurve_secp112r1($G, n, _h);
     },
-    ECCurve_secp112r1: function ECCurve_secp112r1(t0) {
-      this._h = t0;
+    ECCurve_secp112r1: function ECCurve_secp112r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp112r1_closure: function ECCurve_secp112r1_closure() {
     },
-    RSAKeyGeneratorParameters: function RSAKeyGeneratorParameters(t0, t1, t2) {
-      this.publicExponent = t0;
-      this.certainty = t1;
-      this.bitStrength = t2;
+    ECKeyGeneratorParameters: function ECKeyGeneratorParameters() {
+      this._domainParameters = null;
     },
     ECKeyGenerator: function ECKeyGenerator() {
+      this._random = this._params = null;
     },
     ECKeyGenerator_closure: function ECKeyGenerator_closure() {
     }
@@ -5188,19 +5189,23 @@
   Q = {
     ECCurve_prime192v3__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Q.ECCurve_prime192v3(_h);
+      return new Q.ECCurve_prime192v3($G, n, _h);
     },
-    ECCurve_prime192v3: function ECCurve_prime192v3(t0) {
-      this._h = t0;
+    ECCurve_prime192v3: function ECCurve_prime192v3(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_prime192v3_closure: function ECCurve_prime192v3_closure() {
     },
     ECCurve_secp256r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new Q.ECCurve_secp256r1(_h);
+      return new Q.ECCurve_secp256r1($G, n, _h);
     },
-    ECCurve_secp256r1: function ECCurve_secp256r1(t0) {
-      this._h = t0;
+    ECCurve_secp256r1: function ECCurve_secp256r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp256r1_closure: function ECCurve_secp256r1_closure() {
     },
@@ -5210,19 +5215,23 @@
   L = {
     ECCurve_secp160k1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new L.ECCurve_secp160k1(_h);
+      return new L.ECCurve_secp160k1($G, n, _h);
     },
-    ECCurve_secp160k1: function ECCurve_secp160k1(t0) {
-      this._h = t0;
+    ECCurve_secp160k1: function ECCurve_secp160k1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp160k1_closure: function ECCurve_secp160k1_closure() {
     },
     ECCurve_secp192r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
-      return new L.ECCurve_secp192r1(_h);
+      return new L.ECCurve_secp192r1($G, n, _h);
     },
-    ECCurve_secp192r1: function ECCurve_secp192r1(t0) {
-      this._h = t0;
+    ECCurve_secp192r1: function ECCurve_secp192r1(t0, t1, t2) {
+      this.G = t0;
+      this.n = t1;
+      this._h = t2;
     },
     ECCurve_secp192r1_closure: function ECCurve_secp192r1_closure() {
     },
@@ -5277,7 +5286,7 @@
       this.match = t0;
     }, BaseBlockCipher: function BaseBlockCipher() {
     }};
-  var holders = [C, H, J, P, W, K, E, R, Y, X, N, M, A, D, B, F, T, Z, S, V, U, G, Q, L, O];
+  var holders = [C, H, J, P, W, K, E, A, D, Y, X, N, B, M, F, T, Z, S, V, U, R, G, Q, L, O];
   hunkHelpers.setFunctionNamesIfNecessary(holders);
   var $ = {};
   H.JS_CONST.prototype = {};
@@ -5364,9 +5373,7 @@
       H.assertSubtype(iterable, "$isIterable", [H.getTypeArgumentByIndex(receiver, 0)], "$asIterable");
       if (!!receiver.immutable$list)
         H.throwExpression(P.UnsupportedError$("setAll"));
-      t1 = receiver.length;
-      if (index > t1)
-        H.throwExpression(P.RangeError$range(index, 0, t1, "index", null));
+      P.RangeError_checkValueInInterval(index, 0, receiver.length, "index");
       for (t1 = iterable.length, _i = 0; _i < iterable.length; iterable.length === t1 || (0, H.throwConcurrentModificationError)(iterable), ++_i, index = index0) {
         index0 = index + 1;
         this.$indexSet(receiver, index, iterable[_i]);
@@ -5390,6 +5397,9 @@
           throw H.wrapException(P.ConcurrentModificationError$(receiver));
       }
     },
+    skip$1: function(receiver, n) {
+      return H.SubListIterable$(receiver, n, null, H.getTypeArgumentByIndex(receiver, 0));
+    },
     elementAt$1: function(receiver, index) {
       if (index < 0 || index >= receiver.length)
         return H.ioore(receiver, index);
@@ -5404,12 +5414,6 @@
       if (start === end)
         return H.setRuntimeTypeInfo([], [H.getTypeArgumentByIndex(receiver, 0)]);
       return H.setRuntimeTypeInfo(receiver.slice(start, end), [H.getTypeArgumentByIndex(receiver, 0)]);
-    },
-    get$last: function(receiver) {
-      var t1 = receiver.length;
-      if (t1 > 0)
-        return receiver[t1 - 1];
-      throw H.wrapException(H.IterableElementError_noElement());
     },
     setRange$3: function(receiver, start, end, iterable) {
       var $length, i,
@@ -5801,6 +5805,17 @@
           throw H.wrapException(P.ConcurrentModificationError$(_this));
       }
       return t1.charCodeAt(0) == 0 ? t1 : t1;
+    },
+    toList$1$growable: function(_, growable) {
+      var i, _this = this,
+        result = H.setRuntimeTypeInfo([], [H.getRuntimeTypeArgument(_this, "ListIterable", 0)]);
+      C.JSArray_methods.set$length(result, _this.get$length(_this));
+      for (i = 0; i < _this.get$length(_this); ++i)
+        C.JSArray_methods.$indexSet(result, i, _this.elementAt$1(0, i));
+      return result;
+    },
+    toList$0: function($receiver) {
+      return this.toList$1$growable($receiver, true);
     }
   };
   H.SubListIterable.prototype = {
@@ -5878,6 +5893,20 @@
     },
     set$__internal$_current: function(_current) {
       this.__internal$_current = H.assertSubtypeOfRuntimeType(_current, H.getTypeArgumentByIndex(this, 0));
+    }
+  };
+  H.MappedListIterable.prototype = {
+    get$length: function(_) {
+      return J.get$length$asx(this._source);
+    },
+    elementAt$1: function(_, index) {
+      return this._f.call$1(J.elementAt$1$ax(this._source, index));
+    },
+    $asListIterable: function($S, $T) {
+      return [$T];
+    },
+    $asIterable: function($S, $T) {
+      return [$T];
     }
   };
   H.FixedLengthListMixin.prototype = {};
@@ -6010,7 +6039,7 @@
       C.JSArray_methods.add$1(this.$arguments, argument);
       ++t1.argumentCount;
     },
-    $signature: 56
+    $signature: 57
   };
   H.TypeErrorDecoder.prototype = {
     matchTypeError$1: function(message) {
@@ -6391,7 +6420,7 @@
     call$1: function(tag) {
       return this.prototypeForTag(H.stringTypeCheck(tag));
     },
-    $signature: 8
+    $signature: 10
   };
   H.JSSyntaxRegExp.prototype = {
     toString$0: function(_) {
@@ -6714,6 +6743,9 @@
           throw H.wrapException(P.ConcurrentModificationError$(receiver));
       }
     },
+    skip$1: function(receiver, count) {
+      return H.SubListIterable$(receiver, count, null, H.getRuntimeTypeArgumentIntercepted(this, receiver, "ListMixin", 0));
+    },
     $add: function(receiver, other) {
       var result, _this = this,
         t1 = [H.getRuntimeTypeArgumentIntercepted(_this, receiver, "ListMixin", 0)];
@@ -6744,26 +6776,18 @@
         otherStart = skipCount;
         otherList = iterable;
       } else {
-        iterable.toString;
-        otherList = H.SubListIterable$(iterable, skipCount, null, H.getRuntimeTypeArgumentIntercepted(J.getInterceptor$(iterable), iterable, "ListMixin", 0)).toList$1$growable(0, false);
+        otherList = J.skip$1$ax(iterable, skipCount).toList$1$growable(0, false);
         otherStart = 0;
       }
-      if (otherStart + $length > otherList.length)
+      t1 = J.getInterceptor$asx(otherList);
+      if (otherStart + $length > t1.get$length(otherList))
         throw H.wrapException(H.IterableElementError_tooFew());
       if (otherStart < start)
-        for (i = $length - 1; i >= 0; --i) {
-          t1 = otherStart + i;
-          if (t1 >= otherList.length)
-            return H.ioore(otherList, t1);
-          _this.$indexSet(receiver, start + i, otherList[t1]);
-        }
+        for (i = $length - 1; i >= 0; --i)
+          _this.$indexSet(receiver, start + i, t1.$index(otherList, otherStart + i));
       else
-        for (i = 0; i < $length; ++i) {
-          t1 = otherStart + i;
-          if (t1 >= otherList.length)
-            return H.ioore(otherList, t1);
-          _this.$indexSet(receiver, start + i, otherList[t1]);
-        }
+        for (i = 0; i < $length; ++i)
+          _this.$indexSet(receiver, start + i, t1.$index(otherList, otherStart + i));
     },
     setRange$3: function($receiver, start, end, iterable) {
       return this.setRange$4($receiver, start, end, iterable, 0);
@@ -6796,7 +6820,7 @@
       t1._contents = t2 + ": ";
       t1._contents += H.S(v);
     },
-    $signature: 121
+    $signature: 123
   };
   P.MapMixin.prototype = {
     forEach$1: function(_, action) {
@@ -7237,7 +7261,7 @@
         resultDigits[i] = t4 & t5;
       }
       t1 = P._BigIntImpl__normalize(resultUsed, resultDigits);
-      return new P._BigIntImpl(t1 === 0 ? false : isNegative, resultDigits, t1);
+      return new P._BigIntImpl(false, resultDigits, t1);
     },
     _absAndNotSetSign$2: function(other, isNegative) {
       var t1, t2, t3, i, t4, t5,
@@ -7268,7 +7292,7 @@
         resultDigits[i] = t2;
       }
       t1 = P._BigIntImpl__normalize(resultUsed, resultDigits);
-      return new P._BigIntImpl(t1 === 0 ? false : isNegative, resultDigits, t1);
+      return new P._BigIntImpl(false, resultDigits, t1);
     },
     _absOrSetSign$2: function(other, isNegative) {
       var m, l, t1, t2, t3, i, t4, t5, lDigits,
@@ -7306,7 +7330,7 @@
         resultDigits[i] = t2;
       }
       t1 = P._BigIntImpl__normalize(resultUsed, resultDigits);
-      return new P._BigIntImpl(t1 === 0 ? false : isNegative, resultDigits, t1);
+      return new P._BigIntImpl(t1 !== 0 || false, resultDigits, t1);
     },
     _absXorSetSign$2: function(other, isNegative) {
       var m, l, t1, t2, t3, i, t4, t5, lDigits,
@@ -7366,30 +7390,6 @@
         p = _this;
       }
       return p._absAndNotSetSign$2(n._absSubSetSign$2($.$get$_BigIntImpl_one(), false), false);
-    },
-    $or: function(_, other) {
-      var t1, n, p, _this = this;
-      if (_this._used === 0)
-        return other;
-      if (other._used === 0)
-        return _this;
-      t1 = _this._isNegative;
-      if (t1 === other._isNegative) {
-        if (t1) {
-          t1 = $.$get$_BigIntImpl_one();
-          return _this._absSubSetSign$2(t1, true)._absAndSetSign$2(other._absSubSetSign$2(t1, true), true)._absAddSetSign$2(t1, true);
-        }
-        return _this._absOrSetSign$2(other, false);
-      }
-      if (t1) {
-        n = _this;
-        p = other;
-      } else {
-        n = other;
-        p = _this;
-      }
-      t1 = $.$get$_BigIntImpl_one();
-      return n._absSubSetSign$2(t1, true)._absAndNotSetSign$2(p, true)._absAddSetSign$2(t1, true);
     },
     $xor: function(_, other) {
       var t1, n, p, _this = this;
@@ -7613,11 +7613,6 @@
         return H.ioore(t2, t1);
       return 16 * t1 + C.JSInt_methods.get$bitLength(t2[t1]);
     },
-    $tdiv: function(_, other) {
-      if (other._used === 0)
-        throw H.wrapException(C.C_IntegerDivisionByZeroException);
-      return this._div$1(other);
-    },
     $mod: function(_, other) {
       var result;
       if (other._used === 0)
@@ -7627,16 +7622,10 @@
         result = other._isNegative ? result.$sub(0, other) : result.$add(0, other);
       return result;
     },
-    get$isEven: function(_) {
-      var t1;
-      if (this._used !== 0) {
-        t1 = this._digits;
-        if (0 >= t1.length)
-          return H.ioore(t1, 0);
-        t1 = (t1[0] & 1) === 0;
-      } else
-        t1 = true;
-      return t1;
+    get$sign: function(_) {
+      if (this._used === 0)
+        return 0;
+      return this._isNegative ? -1 : 1;
     },
     modPow$2: function(_, exponent, modulus) {
       var modulusUsed, modulusUsed2p4, exponentBitlen, t1, t2, z, resultDigits, result2Digits, gDigits, gUsed, j, t3, i, resultUsed, result2Used, t0;
@@ -7690,14 +7679,6 @@
       if (modulus.$eq(0, $.$get$_BigIntImpl_one()))
         return t1;
       return P._BigIntImpl__binaryGcd(modulus, _this._isNegative || P._BigIntImpl__compareDigits(_this._digits, _this._used, modulus._digits, modulus._used) >= 0 ? _this.$mod(0, modulus) : _this, true);
-    },
-    gcd$1: function(_, other) {
-      var _this = this;
-      if (_this._used === 0)
-        return other._isNegative ? other.$negate(0) : other;
-      if (other._used === 0)
-        return _this._isNegative ? _this.$negate(0) : _this;
-      return P._BigIntImpl__binaryGcd(_this, other, false);
     },
     toInt$0: function(_) {
       var i, t1, t2, result;
@@ -8124,17 +8105,27 @@
       return [P.int];
     }
   };
+  K.ASN1BitString.prototype = {
+    _encode$0: function() {
+      var _this = this,
+        valBytes = H.setRuntimeTypeInfo([0], [P.int]);
+      C.JSArray_methods.addAll$1(valBytes, _this.stringValue);
+      _this._valueByteLength = valBytes.length;
+      _this._encodeHeader$0();
+      _this._setValueBytes$1(valBytes);
+      return _this._encodedBytes;
+    },
+    toString$0: function(_) {
+      return "BitString(" + H.S(this.stringValue) + ")";
+    }
+  };
   K.ASN1Integer.prototype = {
     _encode$0: function() {
-      var t2, t3, _this = this,
-        t = K.ASN1Integer_encodeBigInt(_this._intValue),
-        t1 = t.length;
-      _this._valueByteLength = t1;
+      var _this = this,
+        t = K.ASN1Integer_encodeBigInt(_this._intValue);
+      _this._valueByteLength = t.length;
       _this.super$ASN1Object$_encodeHeader();
-      H.assertSubtype(t, "$isList", [P.int], "$asList");
-      t2 = _this.get$encodedBytes();
-      t3 = _this._valueStartPosition;
-      (t2 && C.NativeUint8List_methods).setRange$3(t2, t3, t3 + t1, t);
+      _this._setValueBytes$1(t);
       return _this._encodedBytes;
     },
     toString$0: function(_) {
@@ -8180,10 +8171,42 @@
     _encode$0: function() {
       return this._encodeHeader$0();
     },
+    _setValueBytes$1: function(valBytes) {
+      var t1, t2;
+      H.assertSubtype(valBytes, "$isList", [P.int], "$asList");
+      t1 = this.get$encodedBytes();
+      t2 = this._valueStartPosition;
+      (t1 && C.NativeUint8List_methods).setRange$3(t1, t2, t2 + valBytes.length, valBytes);
+    },
     toString$0: function(_) {
       var _this = this;
       return "ASN1Object(tag=" + C.JSInt_methods.toRadixString$1(_this._tag, 16) + " valueByteLength=" + H.S(_this._valueByteLength) + ") startpos=" + _this._valueStartPosition + " bytes=" + K.ASN1Util_listToString(_this.get$encodedBytes());
     }
+  };
+  K.ASN1ObjectIdentifier.prototype = {
+    _encode$0: function() {
+      var _this = this,
+        t1 = _this.oi;
+      _this._valueByteLength = t1.length;
+      _this.super$ASN1Object$_encodeHeader();
+      _this._setValueBytes$1(t1);
+      return _this._encodedBytes;
+    }
+  };
+  K.ASN1ObjectIdentifier_fromComponentString_closure.prototype = {
+    call$1: function(v) {
+      return P.int_parse(H.stringTypeCheck(v), null);
+    },
+    $signature: 8
+  };
+  K.ASN1ObjectIdentifier_registerManyNames_closure.prototype = {
+    call$2: function(key, value) {
+      var t1;
+      H.stringTypeCheck(key);
+      t1 = K.ASN1ObjectIdentifier_fromComponentString(H.stringTypeCheck(value));
+      $.ASN1ObjectIdentifier__names.$indexSet(0, key.toLowerCase(), t1);
+    },
+    $signature: 9
   };
   K.ASN1Sequence.prototype = {
     _encode$0: function() {
@@ -8246,31 +8269,28 @@
         t1.doComma = true;
       this.b._contents += "0x" + C.JSInt_methods.toRadixString$1(v, 16);
     },
-    $signature: 9
+    $signature: 11
   };
   E.Owner.prototype = {
     toString$0: function(_) {
-      var t1 = H.S(this.id) + "::" + H.S(this.name) + "::",
+      var t5,
+        t1 = H.S(this.id) + "::" + H.S(this.name) + "::ECDSA::",
         t2 = this._keyPair,
-        t3 = t2.publicKey,
-        t4 = [K.ASN1Object],
-        t5 = H.setRuntimeTypeInfo([], t4);
-      C.JSArray_methods.add$1(t5, new K.ASN1Integer(t3.modulus, 2));
-      C.JSArray_methods.add$1(t5, new K.ASN1Integer(t3.exponent, 2));
-      t3 = [P.List, P.int];
-      t5 = H.assertSubtypeOfRuntimeType(new K.ASN1Sequence(t5, 48).get$encodedBytes(), t3);
-      t5 = t1 + C.C_Base64Codec.get$encoder().convert$1(t5) + "::";
-      t2 = t2.privateKey;
-      t4 = H.setRuntimeTypeInfo([], t4);
-      C.JSArray_methods.add$1(t4, new K.ASN1Integer(t2.modulus, 2));
-      C.JSArray_methods.add$1(t4, new K.ASN1Integer(t2.exponent, 2));
-      C.JSArray_methods.add$1(t4, new K.ASN1Integer(t2.p, 2));
-      C.JSArray_methods.add$1(t4, new K.ASN1Integer(t2.q, 2));
-      t3 = H.assertSubtypeOfRuntimeType(new K.ASN1Sequence(t4, 48).get$encodedBytes(), t3);
-      return t5 + C.C_Base64Codec.get$encoder().convert$1(t3);
+        t3 = [K.ASN1Object],
+        t4 = H.setRuntimeTypeInfo([], t3);
+      C.JSArray_methods.add$1(t4, new K.ASN1BitString(t2.publicKey.Q.getEncoded$0(), 3));
+      t5 = [P.List, P.int];
+      t4 = H.assertSubtypeOfRuntimeType(new K.ASN1Sequence(t4, 48).get$encodedBytes(), t5);
+      t4 = t1 + C.C_Base64Codec.get$encoder().convert$1(t4) + "::";
+      t3 = H.setRuntimeTypeInfo([], t3);
+      C.JSArray_methods.add$1(t3, new K.ASN1Integer(t2.privateKey.d, 2));
+      t5 = H.assertSubtypeOfRuntimeType(new K.ASN1Sequence(t3, 48).get$encodedBytes(), t5);
+      return t4 + C.C_Base64Codec.get$encoder().convert$1(t5);
     }
   };
-  R.newRandom_closure.prototype = {
+  A.AsymmetricModule.prototype = {};
+  D.ECDSAModule.prototype = {};
+  A.newRandom_closure.prototype = {
     call$1: function(_) {
       return this.random.nextInt$1(256);
     },
@@ -8328,33 +8348,6 @@
   N.SecureRandom.prototype = {};
   N.Signer.prototype = {};
   N.StreamCipher.prototype = {};
-  M.RSAAsymmetricKey.prototype = {};
-  M.RSAPrivateKey.prototype = {
-    $eq: function(_, other) {
-      if (other == null)
-        return false;
-      if (!(other instanceof M.RSAPrivateKey))
-        return false;
-      return J.$eq$(other.modulus, this.modulus) && J.$eq$(other.exponent, this.exponent);
-    },
-    get$hashCode: function(_) {
-      return J.get$hashCode$(this.modulus) + J.get$hashCode$(this.exponent);
-    },
-    $isPrivateKey: 1
-  };
-  M.RSAPublicKey.prototype = {
-    $eq: function(_, other) {
-      if (other == null)
-        return false;
-      if (!(other instanceof M.RSAPublicKey))
-        return false;
-      return J.$eq$(other.modulus, this.modulus) && J.$eq$(other.exponent, this.exponent);
-    },
-    get$hashCode: function(_) {
-      return J.get$hashCode$(this.modulus) + J.get$hashCode$(this.exponent);
-    },
-    $isPublicKey: 1
-  };
   A.OAEPEncoding.prototype = {};
   A.OAEPEncoding_closure.prototype = {
     call$2: function(_, match) {
@@ -8363,7 +8356,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 10
+    $signature: 12
   };
   A.OAEPEncoding__closure.prototype = {
     call$0: function() {
@@ -8430,7 +8423,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 11
+    $signature: 13
   };
   X.PKCS1Encoding.prototype = {};
   X.PKCS1Encoding_closure.prototype = {
@@ -8440,7 +8433,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 12
+    $signature: 14
   };
   X.PKCS1Encoding__closure.prototype = {
     call$0: function() {
@@ -8450,7 +8443,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 13
+    $signature: 15
   };
   E.RSAEngine.prototype = {};
   E.RSAEngine_closure.prototype = {
@@ -8459,7 +8452,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 14
+    $signature: 16
   };
   D.AESFastEngine.prototype = {
     get$blockSize: function() {
@@ -9082,7 +9075,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 15
+    $signature: 17
   };
   D.AESFastEngine_init_closure.prototype = {
     call$1: function(i) {
@@ -9090,7 +9083,7 @@
       t1.fixed$length = Array;
       return H.setRuntimeTypeInfo(t1, [P.int]);
     },
-    $signature: 16
+    $signature: 18
   };
   B.CBCBlockCipher.prototype = {
     get$blockSize: function() {
@@ -9173,7 +9166,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 17
+    $signature: 19
   };
   B.CBCBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9182,7 +9175,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 18
+    $signature: 20
   };
   B.CFBBlockCipher.prototype = {
     reset$0: function() {
@@ -9287,7 +9280,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 19
+    $signature: 21
   };
   B.CFBBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9311,7 +9304,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 20
+    $signature: 22
   };
   M.CTRBlockCipher.prototype = {};
   M.CTRBlockCipher_closure.prototype = {
@@ -9321,7 +9314,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 21
+    $signature: 23
   };
   M.CTRBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9335,7 +9328,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 22
+    $signature: 24
   };
   F.ECBBlockCipher.prototype = {
     get$blockSize: function() {
@@ -9358,7 +9351,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 23
+    $signature: 25
   };
   F.ECBBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9367,7 +9360,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 24
+    $signature: 26
   };
   T.GCTRBlockCipher.prototype = {
     get$blockSize: function() {
@@ -9461,7 +9454,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 25
+    $signature: 27
   };
   T.GCTRBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9481,7 +9474,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 26
+    $signature: 28
   };
   Z.OFBBlockCipher.prototype = {
     reset$0: function() {
@@ -9549,7 +9542,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 27
+    $signature: 29
   };
   Z.OFBBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9573,7 +9566,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 28
+    $signature: 30
   };
   S.SICBlockCipher.prototype = {};
   S.SICBlockCipher_closure.prototype = {
@@ -9583,7 +9576,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 29
+    $signature: 31
   };
   S.SICBlockCipher__closure.prototype = {
     call$0: function() {
@@ -9595,7 +9588,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 30
+    $signature: 32
   };
   F.Blake2bDigest.prototype = {
     get$digestSize: function() {
@@ -9674,7 +9667,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 31
+    $signature: 33
   };
   V.MD2Digest.prototype = {
     get$digestSize: function() {
@@ -9689,7 +9682,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 32
+    $signature: 34
   };
   X.MD4Digest.prototype = {
     resetState$0: function() {
@@ -10009,7 +10002,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 33
+    $signature: 35
   };
   M.MD5Digest.prototype = {
     resetState$0: function() {
@@ -10376,7 +10369,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 34
+    $signature: 36
   };
   B.RIPEMD128Digest.prototype = {
     resetState$0: function() {
@@ -10750,7 +10743,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 35
+    $signature: 37
   };
   D.RIPEMD160Digest.prototype = {
     resetState$0: function() {
@@ -11674,7 +11667,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 36
+    $signature: 38
   };
   K.RIPEMD256Digest.prototype = {
     resetState$0: function() {
@@ -12083,7 +12076,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 37
+    $signature: 39
   };
   S.RIPEMD320Digest.prototype = {
     resetState$0: function() {
@@ -13058,7 +13051,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 38
+    $signature: 40
   };
   K.SHA1Digest.prototype = {
     resetState$0: function() {
@@ -13389,7 +13382,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 39
+    $signature: 41
   };
   E.SHA224Digest.prototype = {
     resetState$0: function() {
@@ -13660,7 +13653,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 40
+    $signature: 42
   };
   M.SHA256Digest.prototype = {
     resetState$0: function() {
@@ -13931,7 +13924,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 41
+    $signature: 43
   };
   D.SHA3Digest.prototype = {
     get$digestSize: function() {
@@ -13958,7 +13951,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 42
+    $signature: 44
   };
   D.SHA3Digest__closure.prototype = {
     call$0: function() {
@@ -13988,7 +13981,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 43
+    $signature: 45
   };
   M.SHA384Digest.prototype = {
     reset$0: function() {
@@ -14039,7 +14032,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 44
+    $signature: 46
   };
   U.SHA512Digest.prototype = {
     reset$0: function() {
@@ -14090,7 +14083,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 45
+    $signature: 47
   };
   D.SHA512tDigest.prototype = {
     reset$0: function() {
@@ -14116,7 +14109,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 46
+    $signature: 48
   };
   D.SHA512tDigest__closure.prototype = {
     call$0: function() {
@@ -14221,7 +14214,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 47
+    $signature: 49
   };
   R.TigerDigest.prototype = {
     get$digestSize: function() {
@@ -14251,7 +14244,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 48
+    $signature: 50
   };
   T.WhirlpoolDigest.prototype = {
     get$digestSize: function() {
@@ -14278,9 +14271,36 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 49
+    $signature: 51
   };
   G.ECDomainParameters.prototype = {};
+  G.ECAsymmetricKey.prototype = {};
+  G.ECPrivateKey.prototype = {
+    $eq: function(_, other) {
+      if (other == null)
+        return false;
+      if (!(other instanceof G.ECPrivateKey))
+        return false;
+      return other.parameters == this.parameters && J.$eq$(other.d, this.d);
+    },
+    get$hashCode: function(_) {
+      return J.get$hashCode$(this.parameters) + J.get$hashCode$(this.d);
+    },
+    $isPrivateKey: 1
+  };
+  G.ECPublicKey.prototype = {
+    $eq: function(_, other) {
+      if (other == null)
+        return false;
+      if (!(other instanceof G.ECPublicKey))
+        return false;
+      return other.parameters == this.parameters && J.$eq$(other.Q, this.Q);
+    },
+    get$hashCode: function(_) {
+      return J.get$hashCode$(this.parameters) + J.get$hashCode$(this.Q);
+    },
+    $isPublicKey: 1
+  };
   T.ECCurve_brainpoolp160r1.prototype = {};
   T.ECCurve_brainpoolp160r1_closure.prototype = {
     call$0: function() {
@@ -14293,7 +14313,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 50
+    $signature: 52
   };
   Y.ECCurve_brainpoolp160t1.prototype = {};
   Y.ECCurve_brainpoolp160t1_closure.prototype = {
@@ -14307,7 +14327,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 51
+    $signature: 53
   };
   Z.ECCurve_brainpoolp192r1.prototype = {};
   Z.ECCurve_brainpoolp192r1_closure.prototype = {
@@ -14321,7 +14341,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 52
+    $signature: 54
   };
   E.ECCurve_brainpoolp192t1.prototype = {};
   E.ECCurve_brainpoolp192t1_closure.prototype = {
@@ -14335,7 +14355,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 53
+    $signature: 55
   };
   M.ECCurve_brainpoolp224r1.prototype = {};
   M.ECCurve_brainpoolp224r1_closure.prototype = {
@@ -14349,7 +14369,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 54
+    $signature: 56
   };
   K.ECCurve_brainpoolp224t1.prototype = {};
   K.ECCurve_brainpoolp224t1_closure.prototype = {
@@ -14363,7 +14383,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 55
+    $signature: 4
   };
   E.ECCurve_brainpoolp256r1.prototype = {};
   E.ECCurve_brainpoolp256r1_closure.prototype = {
@@ -14377,7 +14397,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 4
+    $signature: 58
   };
   K.ECCurve_brainpoolp256t1.prototype = {};
   K.ECCurve_brainpoolp256t1_closure.prototype = {
@@ -14391,7 +14411,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 57
+    $signature: 59
   };
   G.ECCurve_brainpoolp320r1.prototype = {};
   G.ECCurve_brainpoolp320r1_closure.prototype = {
@@ -14405,7 +14425,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 58
+    $signature: 60
   };
   G.ECCurve_brainpoolp320t1.prototype = {};
   G.ECCurve_brainpoolp320t1_closure.prototype = {
@@ -14419,7 +14439,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 59
+    $signature: 61
   };
   T.ECCurve_brainpoolp384r1.prototype = {};
   T.ECCurve_brainpoolp384r1_closure.prototype = {
@@ -14433,7 +14453,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 60
+    $signature: 62
   };
   D.ECCurve_brainpoolp384t1.prototype = {};
   D.ECCurve_brainpoolp384t1_closure.prototype = {
@@ -14447,7 +14467,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 61
+    $signature: 63
   };
   Y.ECCurve_brainpoolp512r1.prototype = {};
   Y.ECCurve_brainpoolp512r1_closure.prototype = {
@@ -14461,7 +14481,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 62
+    $signature: 64
   };
   N.ECCurve_brainpoolp512t1.prototype = {};
   N.ECCurve_brainpoolp512t1_closure.prototype = {
@@ -14475,7 +14495,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 63
+    $signature: 65
   };
   G.ECCurve_gostr3410_2001_cryptopro_a.prototype = {};
   G.ECCurve_gostr3410_2001_cryptopro_a_closure.prototype = {
@@ -14489,7 +14509,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 64
+    $signature: 66
   };
   X.ECCurve_gostr3410_2001_cryptopro_b.prototype = {};
   X.ECCurve_gostr3410_2001_cryptopro_b_closure.prototype = {
@@ -14503,7 +14523,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 65
+    $signature: 67
   };
   M.ECCurve_gostr3410_2001_cryptopro_c.prototype = {};
   M.ECCurve_gostr3410_2001_cryptopro_c_closure.prototype = {
@@ -14517,7 +14537,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 66
+    $signature: 68
   };
   Z.ECCurve_gostr3410_2001_cryptopro_xcha.prototype = {};
   Z.ECCurve_gostr3410_2001_cryptopro_xcha_closure.prototype = {
@@ -14531,7 +14551,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 67
+    $signature: 69
   };
   A.ECCurve_gostr3410_2001_cryptopro_xchb.prototype = {};
   A.ECCurve_gostr3410_2001_cryptopro_xchb_closure.prototype = {
@@ -14545,7 +14565,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 68
+    $signature: 70
   };
   T.ECCurve_prime192v1.prototype = {};
   T.ECCurve_prime192v1_closure.prototype = {
@@ -14559,7 +14579,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 69
+    $signature: 71
   };
   M.ECCurve_prime192v2.prototype = {};
   M.ECCurve_prime192v2_closure.prototype = {
@@ -14573,7 +14593,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 70
+    $signature: 72
   };
   Q.ECCurve_prime192v3.prototype = {};
   Q.ECCurve_prime192v3_closure.prototype = {
@@ -14587,7 +14607,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 71
+    $signature: 73
   };
   F.ECCurve_prime239v1.prototype = {};
   F.ECCurve_prime239v1_closure.prototype = {
@@ -14601,7 +14621,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 72
+    $signature: 74
   };
   B.ECCurve_prime239v2.prototype = {};
   B.ECCurve_prime239v2_closure.prototype = {
@@ -14615,7 +14635,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 73
+    $signature: 75
   };
   B.ECCurve_prime239v3.prototype = {};
   B.ECCurve_prime239v3_closure.prototype = {
@@ -14629,21 +14649,16 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 74
+    $signature: 76
   };
   Z.ECCurve_prime256v1.prototype = {};
   Z.ECCurve_prime256v1_closure.prototype = {
     call$0: function() {
-      var t1 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000ffffffffffffffffffffffff", 16),
-        t2 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000fffffffffffffffffffffffc", 16),
-        t3 = P._BigIntImpl_parse("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16),
-        t4 = P._BigIntImpl_parse("036b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
-        t5 = P._BigIntImpl_parse("ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 16);
-      return H.interceptedTypeCheck(F.constructFpStandardCurve("prime256v1", Z.prime256v1_ECCurve_prime256v1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("c49d360886e704936a6678e1139d26b7819f7e90", 16)), "$isECCurve_prime256v1");
+      return Z.ECCurve_prime256v1_ECCurve_prime256v1();
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 75
+    $signature: 77
   };
   G.ECCurve_secp112r1.prototype = {};
   G.ECCurve_secp112r1_closure.prototype = {
@@ -14657,7 +14672,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 76
+    $signature: 78
   };
   X.ECCurve_secp112r2.prototype = {};
   X.ECCurve_secp112r2_closure.prototype = {
@@ -14671,7 +14686,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 77
+    $signature: 79
   };
   Y.ECCurve_secp128r1.prototype = {};
   Y.ECCurve_secp128r1_closure.prototype = {
@@ -14685,7 +14700,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 78
+    $signature: 80
   };
   X.ECCurve_secp128r2.prototype = {};
   X.ECCurve_secp128r2_closure.prototype = {
@@ -14699,7 +14714,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 79
+    $signature: 81
   };
   L.ECCurve_secp160k1.prototype = {};
   L.ECCurve_secp160k1_closure.prototype = {
@@ -14713,7 +14728,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 80
+    $signature: 82
   };
   Z.ECCurve_secp160r1.prototype = {};
   Z.ECCurve_secp160r1_closure.prototype = {
@@ -14727,7 +14742,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 81
+    $signature: 83
   };
   M.ECCurve_secp160r2.prototype = {};
   M.ECCurve_secp160r2_closure.prototype = {
@@ -14741,7 +14756,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 82
+    $signature: 84
   };
   D.ECCurve_secp192k1.prototype = {};
   D.ECCurve_secp192k1_closure.prototype = {
@@ -14755,7 +14770,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 83
+    $signature: 85
   };
   L.ECCurve_secp192r1.prototype = {};
   L.ECCurve_secp192r1_closure.prototype = {
@@ -14769,7 +14784,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 84
+    $signature: 86
   };
   M.ECCurve_secp224k1.prototype = {};
   M.ECCurve_secp224k1_closure.prototype = {
@@ -14783,7 +14798,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 85
+    $signature: 87
   };
   V.ECCurve_secp224r1.prototype = {};
   V.ECCurve_secp224r1_closure.prototype = {
@@ -14797,7 +14812,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 86
+    $signature: 88
   };
   K.ECCurve_secp256k1.prototype = {};
   K.ECCurve_secp256k1_closure.prototype = {
@@ -14811,7 +14826,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 87
+    $signature: 89
   };
   Q.ECCurve_secp256r1.prototype = {};
   Q.ECCurve_secp256r1_closure.prototype = {
@@ -14825,7 +14840,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 88
+    $signature: 90
   };
   S.ECCurve_secp384r1.prototype = {};
   S.ECCurve_secp384r1_closure.prototype = {
@@ -14839,7 +14854,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 89
+    $signature: 91
   };
   R.ECCurve_secp521r1.prototype = {};
   R.ECCurve_secp521r1_closure.prototype = {
@@ -14853,7 +14868,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 90
+    $signature: 92
   };
   Y.ECDomainParametersImpl.prototype = {$isECDomainParameters: 1};
   Y.ECFieldElementBase.prototype = {
@@ -14882,6 +14897,16 @@
       if (this.get$isInfinity())
         return 0;
       return J.get$hashCode$(this.x) ^ J.get$hashCode$(this.y);
+    },
+    $mul: function(_, k) {
+      var _this = this;
+      if (k.get$sign(k) < 0)
+        throw H.wrapException(P.ArgumentError$("The multiplicator cannot be negative"));
+      if (_this.get$isInfinity())
+        return _this;
+      if (k.get$sign(k) === 0)
+        return _this.curve._infinity;
+      return _this._multiplier.call$3(_this, k, _this._preCompInfo);
     },
     $isECPoint: 1
   };
@@ -14951,7 +14976,7 @@
     _lucasSequence$4: function(p, $P, $Q, k) {
       var j, t1, Qh, Ql, Vh, Uh0,
         n = k.get$bitLength(k),
-        s = M._lbit0(k),
+        s = M._lbit(k),
         Uh = $.$get$_BigIntImpl_one(),
         Vl = $.$get$_BigIntImpl_two();
       for (j = n - 1, t1 = s + 1, Qh = Uh, Ql = Qh, Vh = $P, Uh0 = Ql; j >= t1; --j) {
@@ -14996,6 +15021,23 @@
     }
   };
   M.ECPoint0.prototype = {
+    getEncoded$0: function() {
+      var t1, t2, qLength, PC, $X, PO;
+      if (this.get$isInfinity())
+        return new Uint8Array(H._ensureNativeList(H.setRuntimeTypeInfo([1], [P.int])));
+      t1 = this.x;
+      t2 = t1.q;
+      qLength = C.JSInt_methods._tdivFast$1(t2.get$bitLength(t2) + 7, 8);
+      PC = !J.$eq$(this.y.x.$and(0, $.$get$_BigIntImpl_one().$shl(0, 0)), $.$get$_BigIntImpl_zero()) ? 3 : 2;
+      $X = M._x9IntegerToBytes(t1.x, qLength);
+      PO = new Uint8Array($X.length + 1);
+      t1 = C.JSInt_methods.toInt$0(PC);
+      if (0 >= PO.length)
+        return H.ioore(PO, 0);
+      PO[0] = t1;
+      C.NativeUint8List_methods.setAll$2(PO, 1, $X);
+      return PO;
+    },
     $add: function(_, b) {
       var t1, t2, t3, gamma, x3, _this = this;
       H.interceptedTypeCheck(b, "$isECPoint0");
@@ -15072,7 +15114,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 91
+    $signature: 93
   };
   Z.PBKDF2KeyDerivator__closure.prototype = {
     call$0: function() {
@@ -15085,7 +15127,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 92
+    $signature: 94
   };
   V.Scrypt.prototype = {};
   V.Scrypt_closure.prototype = {
@@ -15094,76 +15136,38 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 93
+    $signature: 95
   };
-  G.RSAKeyGeneratorParameters.prototype = {};
-  G.ECKeyGenerator.prototype = {};
+  G.ECKeyGeneratorParameters.prototype = {};
+  G.ECKeyGenerator.prototype = {
+    generateKeyPair$0: function() {
+      var d, $Q, t1, _this = this,
+        n = _this._params.n,
+        nBitLength = n.get$bitLength(n);
+      do
+        d = _this._random.nextBigInteger$1(nBitLength);
+      while (J.$eq$(d, $.$get$_BigIntImpl_zero()) || d.compareTo$1(0, n) >= 0);
+      $Q = _this._params.G.$mul(0, d);
+      t1 = _this._params;
+      return new N.AsymmetricKeyPair(new G.ECPublicKey($Q, t1), new G.ECPrivateKey(d, t1), [N.PublicKey, N.PrivateKey]);
+    }
+  };
   G.ECKeyGenerator_closure.prototype = {
     call$0: function() {
       return new G.ECKeyGenerator();
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 94
+    $signature: 96
   };
-  X.RSAKeyGenerator.prototype = {
-    generateKeyPair$0: function() {
-      var p, t2, q, n, t0, _this = this,
-        t1 = _this._params,
-        strength = t1.bitStrength,
-        pbitlength = (strength + 1) / 2 | 0,
-        qbitlength = strength - pbitlength,
-        mindiffbits = strength / 3 | 0,
-        e = t1.publicExponent;
-      for (p = null; true;) {
-        p = X.generateProbablePrime(pbitlength, 1, _this._random);
-        t1 = p.$mod(0, e);
-        t2 = $.$get$_BigIntImpl_one();
-        if (J.$eq$(t1, t2))
-          continue;
-        if (!X._isProbablePrime(p, _this._params.certainty))
-          continue;
-        if (J.$eq$(e.gcd$1(0, p.$sub(0, t2)), t2))
-          break;
-      }
-      for (q = null, n = null; true;) {
-        for (; true;) {
-          q = X.generateProbablePrime(qbitlength, 1, _this._random);
-          t1 = q.$sub(0, p);
-          if (t1._isNegative)
-            t1 = t1.$negate(0);
-          if (t1.get$bitLength(t1) < mindiffbits)
-            continue;
-          t1 = q.$mod(0, e);
-          t2 = $.$get$_BigIntImpl_one();
-          if (J.$eq$(t1, t2))
-            continue;
-          if (!X._isProbablePrime(q, _this._params.certainty))
-            continue;
-          if (J.$eq$(e.gcd$1(0, q.$sub(0, t2)), t2))
-            break;
-        }
-        n = p.$mul(0, q);
-        if (n.get$bitLength(n) === _this._params.bitStrength)
-          break;
-        p = p.compareTo$1(0, q) > 0 ? p : q;
-      }
-      if (p.compareTo$1(0, q) < 0) {
-        t0 = q;
-        q = p;
-        p = t0;
-      }
-      t1 = $.$get$_BigIntImpl_one();
-      return new N.AsymmetricKeyPair(new M.RSAPublicKey(n, e), new M.RSAPrivateKey(p, q, n, e.modInverse$1(0, p.$sub(0, t1).$mul(0, q.$sub(0, t1)))), [N.PublicKey, N.PrivateKey]);
-    }
-  };
+  X.RSAKeyGenerator.prototype = {};
   X.RSAKeyGenerator_closure.prototype = {
     call$0: function() {
       return new X.RSAKeyGenerator();
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 95
+    $signature: 97
   };
   V.CBCBlockCipherMac.prototype = {
     get$macSize: function() {
@@ -15177,7 +15181,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 96
+    $signature: 98
   };
   V.CBCBlockCipherMac__closure.prototype = {
     call$0: function() {
@@ -15200,7 +15204,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 97
+    $signature: 99
   };
   R.CMac.prototype = {
     get$macSize: function() {
@@ -15214,7 +15218,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 98
+    $signature: 100
   };
   R.CMac__closure.prototype = {
     call$0: function() {
@@ -15292,7 +15296,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 99
+    $signature: 101
   };
   X.HMac.prototype = {
     get$macSize: function() {
@@ -15311,7 +15315,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 100
+    $signature: 102
   };
   X.HMac__closure.prototype = {
     call$0: function() {
@@ -15326,7 +15330,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 101
+    $signature: 103
   };
   O.PaddedBlockCipherImpl.prototype = {
     get$blockSize: function() {
@@ -15353,7 +15357,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 102
+    $signature: 104
   };
   O.PaddedBlockCipherImpl__closure.prototype = {
     call$0: function() {
@@ -15364,7 +15368,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 103
+    $signature: 105
   };
   Z.ISO7816d4Padding.prototype = {
     init$1: function(params) {
@@ -15376,7 +15380,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 104
+    $signature: 106
   };
   R.PKCS7Padding.prototype = {
     init$1: function(params) {
@@ -15388,7 +15392,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 105
+    $signature: 107
   };
   V.AutoSeedBlockCtrRandom.prototype = {
     nextBigInteger$1: function(bitLength) {
@@ -15420,7 +15424,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 106
+    $signature: 108
   };
   V.AutoSeedBlockCtrRandom__closure.prototype = {
     call$0: function() {
@@ -15431,19 +15435,19 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 107
+    $signature: 109
   };
   V.AutoSeedBlockCtrRandom_nextBigInteger_closure.prototype = {
     call$0: function() {
       return L.decodeBigInt(this.$this._delegate._randomBits$1(this.bitLength));
     },
-    $signature: 108
+    $signature: 110
   };
   V.AutoSeedBlockCtrRandom_nextBytes_closure.prototype = {
     call$0: function() {
       return this.$this._delegate.nextBytes$1(this.count);
     },
-    $signature: 109
+    $signature: 111
   };
   V.BlockCtrRandom.prototype = {
     seed$1: function(params) {
@@ -15490,7 +15494,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 110
+    $signature: 112
   };
   V.BlockCtrRandom__closure.prototype = {
     call$0: function() {
@@ -15499,7 +15503,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 111
+    $signature: 171
   };
   E.FortunaRandom.prototype = {
     nextBigInteger$1: function(bitLength) {
@@ -15513,7 +15517,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 169
+    $signature: 114
   };
   L.ECDSASigner.prototype = {};
   L.ECDSASigner_closure.prototype = {
@@ -15524,7 +15528,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 113
+    $signature: 115
   };
   L.ECDSASigner__closure.prototype = {
     call$0: function() {
@@ -15537,7 +15541,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 114
+    $signature: 116
   };
   N.RSASigner.prototype = {
     _hexStringToBytes$1: function(hex) {
@@ -15565,7 +15569,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 115
+    $signature: 117
   };
   N.RSASigner__closure.prototype = {
     call$0: function() {
@@ -15576,7 +15580,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 116
+    $signature: 118
   };
   Q.BaseAsymmetricBlockCipher.prototype = {$isAsymmetricBlockCipher: 1};
   O.BaseBlockCipher.prototype = {$isBlockCipher: 1};
@@ -16396,13 +16400,13 @@
     call$1: function(m) {
       return "\\" + H.S(m.group$1(0));
     },
-    $signature: 117
+    $signature: 119
   };
   R._escapeRegExp_closure0.prototype = {
     call$1: function(s) {
       return s;
     },
-    $signature: 118
+    $signature: 120
   };
   R.DynamicFactoryConfig.prototype = {
     tryFactory$1: function(algorithmName) {
@@ -16548,13 +16552,13 @@
     call$0: function() {
       return new H.JsLinkedHashMap([P.String, {func: 1}]);
     },
-    $signature: 119
+    $signature: 121
   };
   R._RegistryImpl__addDynamicFactoryConfig_closure.prototype = {
     call$0: function() {
       return P.LinkedHashSet_LinkedHashSet(R.DynamicFactoryConfig);
     },
-    $signature: 120
+    $signature: 122
   };
   Y.Register64.prototype = {
     $eq: function(_, y) {
@@ -16837,7 +16841,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 122
+    $signature: 124
   };
   X.CTRStreamCipher__closure.prototype = {
     call$0: function() {
@@ -16849,7 +16853,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 123
+    $signature: 125
   };
   A.Salsa20Engine.prototype = {};
   A.Salsa20Engine_closure.prototype = {
@@ -16866,7 +16870,7 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 124
+    $signature: 126
   };
   F.SICStreamCipher.prototype = {
     SICStreamCipher$1: function(underlyingCipher) {
@@ -16938,7 +16942,7 @@
     },
     "call*": "call$2",
     $requiredArgCount: 2,
-    $signature: 125
+    $signature: 127
   };
   F.SICStreamCipher__closure.prototype = {
     call$0: function() {
@@ -16947,12 +16951,12 @@
     },
     "call*": "call$0",
     $requiredArgCount: 0,
-    $signature: 126
+    $signature: 128
   };
   L.MessageEvent.prototype = {};
   L.main_closure.prototype = {
     call$1: function($event) {
-      var t2, random, params, gen, t3,
+      var t2, random, t3, t4, params, gen, ecparams,
         data = Y.WorkerEvent_resolve(H.stringTypeCast(J.get$data$x(H.interceptedTypeCast($event, "$isMessageEvent")))),
         t1 = data.type;
       switch (t1) {
@@ -16967,30 +16971,32 @@
           t1 = data.id;
           t2 = data.name;
           P.print("Generating Owner with id: " + H.S(t1) + ", name: " + H.S(t2));
-          random = R.newRandom();
-          params = new G.RSAKeyGeneratorParameters(P._BigIntImpl__BigIntImpl$from(65537), 12, 2048);
-          gen = new X.RSAKeyGenerator();
-          t3 = new N.ParametersWithRandom(params, random, [G.RSAKeyGeneratorParameters]);
+          random = A.newRandom();
+          K.ASN1ObjectIdentifier_registerManyNames($.ASN1ObjectIdentifier_DN);
+          t3 = Z.ECCurve_prime256v1_ECCurve_prime256v1();
+          t4 = t3.n;
+          t4.get$bitLength(t4);
+          params = new G.ECKeyGeneratorParameters();
+          params._domainParameters = t3;
+          gen = new G.ECKeyGenerator();
+          t3 = new N.ParametersWithRandom(params, random, [G.ECKeyGeneratorParameters]);
           if (!!t3.$isParametersWithRandom) {
             gen._random = random;
-            gen._params = params;
-            t3 = params;
+            ecparams = params;
           } else {
             gen._random = $.$get$registry().create$1$1("", N.SecureRandom);
-            t3 = gen._params = H.interceptedTypeCheck(t3, "$isRSAKeyGeneratorParameters");
+            H.interceptedTypeCheck(t3, "$isECKeyGeneratorParameters");
+            ecparams = t3;
           }
-          if (t3.bitStrength < 12)
-            H.throwExpression(P.ArgumentError$("key bit strength cannot be smaller than 12"));
-          if (J.$eq$(t3.publicExponent.$and(0, $.$get$_BigIntImpl_one().$shl(0, 0)), $.$get$_BigIntImpl_zero()))
-            H.throwExpression(P.ArgumentError$("Public exponent cannot be even"));
-          t1 = new E.Owner(t1, t2, gen.generateKeyPair$0()).toString$0(0);
+          gen._params = ecparams._domainParameters;
+          t1 = new E.Owner(t1, t2, new D.ECDSAModule(), gen.generateKeyPair$0()).toString$0(0);
           self.postMessage(t1);
           break;
         default:
           throw H.wrapException("Unsupported EventType: " + t1);
       }
     },
-    $signature: 127
+    $signature: 129
   };
   (function aliases() {
     var _ = J.Interceptor.prototype;
@@ -17006,67 +17012,67 @@
   })();
   (function installTearOffs() {
     var _static = hunkHelpers.installStaticTearOff;
-    _static(T, "brainpoolp160r1_ECCurve_brainpoolp160r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp160r1__make"], 128, 0);
-    _static(Y, "brainpoolp160t1_ECCurve_brainpoolp160t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp160t1__make"], 129, 0);
-    _static(Z, "brainpoolp192r1_ECCurve_brainpoolp192r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp192r1__make"], 130, 0);
-    _static(E, "brainpoolp192t1_ECCurve_brainpoolp192t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp192t1__make"], 131, 0);
-    _static(M, "brainpoolp224r1_ECCurve_brainpoolp224r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp224r1__make"], 132, 0);
-    _static(K, "brainpoolp224t1_ECCurve_brainpoolp224t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp224t1__make"], 133, 0);
-    _static(E, "brainpoolp256r1_ECCurve_brainpoolp256r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp256r1__make"], 134, 0);
-    _static(K, "brainpoolp256t1_ECCurve_brainpoolp256t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp256t1__make"], 135, 0);
-    _static(G, "brainpoolp320r1_ECCurve_brainpoolp320r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp320r1__make"], 136, 0);
-    _static(G, "brainpoolp320t1_ECCurve_brainpoolp320t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp320t1__make"], 137, 0);
-    _static(T, "brainpoolp384r1_ECCurve_brainpoolp384r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp384r1__make"], 138, 0);
-    _static(D, "brainpoolp384t1_ECCurve_brainpoolp384t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp384t1__make"], 139, 0);
-    _static(Y, "brainpoolp512r1_ECCurve_brainpoolp512r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp512r1__make"], 140, 0);
-    _static(N, "brainpoolp512t1_ECCurve_brainpoolp512t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp512t1__make"], 141, 0);
-    _static(G, "gostr3410_2001_cryptopro_a_ECCurve_gostr3410_2001_cryptopro_a__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_a__make"], 142, 0);
-    _static(X, "gostr3410_2001_cryptopro_b_ECCurve_gostr3410_2001_cryptopro_b__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_b__make"], 143, 0);
-    _static(M, "gostr3410_2001_cryptopro_c_ECCurve_gostr3410_2001_cryptopro_c__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_c__make"], 144, 0);
-    _static(Z, "gostr3410_2001_cryptopro_xcha_ECCurve_gostr3410_2001_cryptopro_xcha__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_xcha__make"], 145, 0);
-    _static(A, "gostr3410_2001_cryptopro_xchb_ECCurve_gostr3410_2001_cryptopro_xchb__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_xchb__make"], 146, 0);
-    _static(T, "prime192v1_ECCurve_prime192v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v1__make"], 147, 0);
-    _static(M, "prime192v2_ECCurve_prime192v2__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v2__make"], 148, 0);
-    _static(Q, "prime192v3_ECCurve_prime192v3__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v3__make"], 149, 0);
-    _static(F, "prime239v1_ECCurve_prime239v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v1__make"], 150, 0);
-    _static(B, "prime239v2_ECCurve_prime239v2__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v2__make"], 151, 0);
-    _static(B, "prime239v3_ECCurve_prime239v3__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v3__make"], 152, 0);
-    _static(Z, "prime256v1_ECCurve_prime256v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime256v1__make"], 153, 0);
-    _static(G, "secp112r1_ECCurve_secp112r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp112r1__make"], 154, 0);
-    _static(X, "secp112r2_ECCurve_secp112r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp112r2__make"], 155, 0);
-    _static(Y, "secp128r1_ECCurve_secp128r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp128r1__make"], 156, 0);
-    _static(X, "secp128r2_ECCurve_secp128r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp128r2__make"], 157, 0);
-    _static(L, "secp160k1_ECCurve_secp160k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp160k1__make"], 158, 0);
-    _static(Z, "secp160r1_ECCurve_secp160r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp160r1__make"], 159, 0);
-    _static(M, "secp160r2_ECCurve_secp160r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp160r2__make"], 160, 0);
-    _static(D, "secp192k1_ECCurve_secp192k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp192k1__make"], 161, 0);
-    _static(L, "secp192r1_ECCurve_secp192r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp192r1__make"], 162, 0);
-    _static(M, "secp224k1_ECCurve_secp224k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp224k1__make"], 163, 0);
-    _static(V, "secp224r1_ECCurve_secp224r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp224r1__make"], 164, 0);
-    _static(K, "secp256k1_ECCurve_secp256k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp256k1__make"], 165, 0);
-    _static(Q, "secp256r1_ECCurve_secp256r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp256r1__make"], 166, 0);
-    _static(S, "secp384r1_ECCurve_secp384r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp384r1__make"], 167, 0);
-    _static(R, "secp521r1_ECCurve_secp521r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp521r1__make"], 168, 0);
-    _static(M, "ecc_fp___WNafMultiplier$closure", 3, null, ["call$3"], ["_WNafMultiplier"], 112, 0);
+    _static(T, "brainpoolp160r1_ECCurve_brainpoolp160r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp160r1__make"], 130, 0);
+    _static(Y, "brainpoolp160t1_ECCurve_brainpoolp160t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp160t1__make"], 131, 0);
+    _static(Z, "brainpoolp192r1_ECCurve_brainpoolp192r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp192r1__make"], 132, 0);
+    _static(E, "brainpoolp192t1_ECCurve_brainpoolp192t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp192t1__make"], 133, 0);
+    _static(M, "brainpoolp224r1_ECCurve_brainpoolp224r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp224r1__make"], 134, 0);
+    _static(K, "brainpoolp224t1_ECCurve_brainpoolp224t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp224t1__make"], 135, 0);
+    _static(E, "brainpoolp256r1_ECCurve_brainpoolp256r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp256r1__make"], 136, 0);
+    _static(K, "brainpoolp256t1_ECCurve_brainpoolp256t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp256t1__make"], 137, 0);
+    _static(G, "brainpoolp320r1_ECCurve_brainpoolp320r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp320r1__make"], 138, 0);
+    _static(G, "brainpoolp320t1_ECCurve_brainpoolp320t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp320t1__make"], 139, 0);
+    _static(T, "brainpoolp384r1_ECCurve_brainpoolp384r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp384r1__make"], 140, 0);
+    _static(D, "brainpoolp384t1_ECCurve_brainpoolp384t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp384t1__make"], 141, 0);
+    _static(Y, "brainpoolp512r1_ECCurve_brainpoolp512r1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp512r1__make"], 142, 0);
+    _static(N, "brainpoolp512t1_ECCurve_brainpoolp512t1__make$closure", 6, null, ["call$6"], ["ECCurve_brainpoolp512t1__make"], 143, 0);
+    _static(G, "gostr3410_2001_cryptopro_a_ECCurve_gostr3410_2001_cryptopro_a__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_a__make"], 144, 0);
+    _static(X, "gostr3410_2001_cryptopro_b_ECCurve_gostr3410_2001_cryptopro_b__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_b__make"], 145, 0);
+    _static(M, "gostr3410_2001_cryptopro_c_ECCurve_gostr3410_2001_cryptopro_c__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_c__make"], 146, 0);
+    _static(Z, "gostr3410_2001_cryptopro_xcha_ECCurve_gostr3410_2001_cryptopro_xcha__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_xcha__make"], 147, 0);
+    _static(A, "gostr3410_2001_cryptopro_xchb_ECCurve_gostr3410_2001_cryptopro_xchb__make$closure", 6, null, ["call$6"], ["ECCurve_gostr3410_2001_cryptopro_xchb__make"], 148, 0);
+    _static(T, "prime192v1_ECCurve_prime192v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v1__make"], 149, 0);
+    _static(M, "prime192v2_ECCurve_prime192v2__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v2__make"], 150, 0);
+    _static(Q, "prime192v3_ECCurve_prime192v3__make$closure", 6, null, ["call$6"], ["ECCurve_prime192v3__make"], 151, 0);
+    _static(F, "prime239v1_ECCurve_prime239v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v1__make"], 152, 0);
+    _static(B, "prime239v2_ECCurve_prime239v2__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v2__make"], 153, 0);
+    _static(B, "prime239v3_ECCurve_prime239v3__make$closure", 6, null, ["call$6"], ["ECCurve_prime239v3__make"], 154, 0);
+    _static(Z, "prime256v1_ECCurve_prime256v1__make$closure", 6, null, ["call$6"], ["ECCurve_prime256v1__make"], 155, 0);
+    _static(G, "secp112r1_ECCurve_secp112r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp112r1__make"], 156, 0);
+    _static(X, "secp112r2_ECCurve_secp112r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp112r2__make"], 157, 0);
+    _static(Y, "secp128r1_ECCurve_secp128r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp128r1__make"], 158, 0);
+    _static(X, "secp128r2_ECCurve_secp128r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp128r2__make"], 159, 0);
+    _static(L, "secp160k1_ECCurve_secp160k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp160k1__make"], 160, 0);
+    _static(Z, "secp160r1_ECCurve_secp160r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp160r1__make"], 161, 0);
+    _static(M, "secp160r2_ECCurve_secp160r2__make$closure", 6, null, ["call$6"], ["ECCurve_secp160r2__make"], 162, 0);
+    _static(D, "secp192k1_ECCurve_secp192k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp192k1__make"], 163, 0);
+    _static(L, "secp192r1_ECCurve_secp192r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp192r1__make"], 164, 0);
+    _static(M, "secp224k1_ECCurve_secp224k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp224k1__make"], 165, 0);
+    _static(V, "secp224r1_ECCurve_secp224r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp224r1__make"], 166, 0);
+    _static(K, "secp256k1_ECCurve_secp256k1__make$closure", 6, null, ["call$6"], ["ECCurve_secp256k1__make"], 167, 0);
+    _static(Q, "secp256r1_ECCurve_secp256r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp256r1__make"], 168, 0);
+    _static(S, "secp384r1_ECCurve_secp384r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp384r1__make"], 169, 0);
+    _static(R, "secp521r1_ECCurve_secp521r1__make$closure", 6, null, ["call$6"], ["ECCurve_secp521r1__make"], 170, 0);
+    _static(M, "ecc_fp___WNafMultiplier$closure", 3, null, ["call$3"], ["_WNafMultiplier"], 113, 0);
   })();
   (function inheritance() {
     var _mixin = hunkHelpers.mixin,
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(P.Object, null);
-    _inheritMany(P.Object, [H.JS_CONST, J.Interceptor, J.ArrayIterator, P.Iterable, H.ListIterator, H.FixedLengthListMixin, H.Symbol, P.MapView, H.ConstantMap, H.JSInvocationMirror, H.Closure, H.TypeErrorDecoder, P.Error, H.TypeImpl, P.MapMixin, H.LinkedHashMapCell, H.LinkedHashMapKeyIterator, H.JSSyntaxRegExp, H._MatchImplementation, H._AllMatchesIterator, P.StreamTransformerBase, P._SetBase, P._LinkedHashSetCell, P._LinkedHashSetIterator, P.ListMixin, P._UnmodifiableMapMixin, P.Codec, P._Base64Encoder, P._BigIntImpl, P._BigIntClassic, P.BigInt, P.bool, P.num, P.OutOfMemoryError, P.StackOverflowError, P._Exception, P.FormatException, P.IntegerDivisionByZeroException, P.Function, P.List, P.Map, P.Null, P.Match, P.RegExpMatch, P.String, P.StringBuffer, P.Symbol0, P.Type, P._JSSecureRandom, P.Endian, P.Uint8List, K.ASN1Object, E.Owner, Y.WorkerEvent, O.BaseBlockCipher, N.Algorithm, N.AsymmetricKeyPair, N.CipherParameters, N.KeyGeneratorParameters, N.PaddedBlockCipher, N.ParametersWithIV, N.ParametersWithRandom, N.PrivateKey, N.PublicKey, N.RegistryFactoryException, M.RSAAsymmetricKey, Q.BaseAsymmetricBlockCipher, Y.BaseDigest, G.ECDomainParameters, Y.ECDomainParametersImpl, Y.ECFieldElementBase, Y.ECPointBase, Y.ECCurveBase, Y.PreCompInfo, M._WNafPreCompInfo, K.BaseKeyDerivator, G.ECKeyGenerator, X.RSAKeyGenerator, V.BaseMac, O.PaddedBlockCipherImpl, S.BasePadding, V.AutoSeedBlockCtrRandom, R.SecureRandomBase, E.FortunaRandom, L.ECDSASigner, N.RSASigner, R.BaseStreamCipher, R.FactoryConfig, R._RegistryImpl, Y.Register64, Y.Register64List]);
+    _inheritMany(P.Object, [H.JS_CONST, J.Interceptor, J.ArrayIterator, P.Iterable, H.ListIterator, H.FixedLengthListMixin, H.Symbol, P.MapView, H.ConstantMap, H.JSInvocationMirror, H.Closure, H.TypeErrorDecoder, P.Error, H.TypeImpl, P.MapMixin, H.LinkedHashMapCell, H.LinkedHashMapKeyIterator, H.JSSyntaxRegExp, H._MatchImplementation, H._AllMatchesIterator, P.StreamTransformerBase, P._SetBase, P._LinkedHashSetCell, P._LinkedHashSetIterator, P.ListMixin, P._UnmodifiableMapMixin, P.Codec, P._Base64Encoder, P._BigIntImpl, P._BigIntClassic, P.BigInt, P.bool, P.num, P.OutOfMemoryError, P.StackOverflowError, P._Exception, P.FormatException, P.IntegerDivisionByZeroException, P.Function, P.List, P.Map, P.Null, P.Match, P.RegExpMatch, P.String, P.StringBuffer, P.Symbol0, P.Type, P._JSSecureRandom, P.Endian, P.Uint8List, K.ASN1Object, E.Owner, A.AsymmetricModule, Y.WorkerEvent, O.BaseBlockCipher, N.Algorithm, N.AsymmetricKeyPair, N.CipherParameters, N.KeyGeneratorParameters, N.PaddedBlockCipher, N.ParametersWithIV, N.ParametersWithRandom, N.PrivateKey, N.PublicKey, N.RegistryFactoryException, Q.BaseAsymmetricBlockCipher, Y.BaseDigest, G.ECDomainParameters, G.ECAsymmetricKey, Y.ECDomainParametersImpl, Y.ECFieldElementBase, Y.ECPointBase, Y.ECCurveBase, Y.PreCompInfo, M._WNafPreCompInfo, K.BaseKeyDerivator, G.ECKeyGenerator, X.RSAKeyGenerator, V.BaseMac, O.PaddedBlockCipherImpl, S.BasePadding, V.AutoSeedBlockCtrRandom, R.SecureRandomBase, E.FortunaRandom, L.ECDSASigner, N.RSASigner, R.BaseStreamCipher, R.FactoryConfig, R._RegistryImpl, Y.Register64, Y.Register64List]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSArray, J.JSNumber, J.JSString, H.NativeTypedData, W.DomException]);
     _inheritMany(J.JavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction, L.MessageEvent]);
     _inherit(J.JSUnmodifiableArray, J.JSArray);
     _inheritMany(J.JSNumber, [J.JSInt, J.JSDouble]);
     _inherit(H.EfficientLengthIterable, P.Iterable);
     _inheritMany(H.EfficientLengthIterable, [H.ListIterable, H.LinkedHashMapKeyIterable, P.Set]);
-    _inheritMany(H.ListIterable, [H.SubListIterable, H.ReversedListIterable, P._JsonMapKeyIterable]);
+    _inheritMany(H.ListIterable, [H.SubListIterable, H.MappedListIterable, H.ReversedListIterable, P._JsonMapKeyIterable]);
     _inherit(P._UnmodifiableMapView_MapView__UnmodifiableMapMixin, P.MapView);
     _inherit(P.UnmodifiableMapView, P._UnmodifiableMapView_MapView__UnmodifiableMapMixin);
     _inherit(H.ConstantMapView, P.UnmodifiableMapView);
     _inherit(H.ConstantStringMap, H.ConstantMap);
-    _inheritMany(H.Closure, [H.Primitives_functionNoSuchMethod_closure, H.unwrapException_saveStackTrace, H.TearOffClosure, H.initHooks_closure, H.initHooks_closure0, H.initHooks_closure1, P.MapBase_mapToString_closure, P.NoSuchMethodError_toString_closure, P._BigIntImpl_hashCode_combine, P._BigIntImpl_hashCode_finish, K.ASN1Sequence__encode_closure, K.ASN1Sequence__childLength_closure, K.ASN1Sequence_toString_closure, K.ASN1Util_listToString_closure, R.newRandom_closure, A.OAEPEncoding_closure, A.OAEPEncoding__closure, X.PKCS1Encoding_closure, X.PKCS1Encoding__closure, E.RSAEngine_closure, D.AESFastEngine_closure, D.AESFastEngine_init_closure, B.CBCBlockCipher_closure, B.CBCBlockCipher__closure, B.CFBBlockCipher_closure, B.CFBBlockCipher__closure, M.CTRBlockCipher_closure, M.CTRBlockCipher__closure, F.ECBBlockCipher_closure, F.ECBBlockCipher__closure, T.GCTRBlockCipher_closure, T.GCTRBlockCipher__closure, Z.OFBBlockCipher_closure, Z.OFBBlockCipher__closure, S.SICBlockCipher_closure, S.SICBlockCipher__closure, F.Blake2bDigest_closure, V.MD2Digest_closure, X.MD4Digest_closure, M.MD5Digest_closure, B.RIPEMD128Digest_closure, D.RIPEMD160Digest_closure, K.RIPEMD256Digest_closure, S.RIPEMD320Digest_closure, K.SHA1Digest_closure, E.SHA224Digest_closure, M.SHA256Digest_closure, D.SHA3Digest_closure, D.SHA3Digest__closure, M.SHA384Digest_closure, U.SHA512Digest_closure, D.SHA512tDigest_closure, D.SHA512tDigest__closure, R.TigerDigest_closure, T.WhirlpoolDigest_closure, T.ECCurve_brainpoolp160r1_closure, Y.ECCurve_brainpoolp160t1_closure, Z.ECCurve_brainpoolp192r1_closure, E.ECCurve_brainpoolp192t1_closure, M.ECCurve_brainpoolp224r1_closure, K.ECCurve_brainpoolp224t1_closure, E.ECCurve_brainpoolp256r1_closure, K.ECCurve_brainpoolp256t1_closure, G.ECCurve_brainpoolp320r1_closure, G.ECCurve_brainpoolp320t1_closure, T.ECCurve_brainpoolp384r1_closure, D.ECCurve_brainpoolp384t1_closure, Y.ECCurve_brainpoolp512r1_closure, N.ECCurve_brainpoolp512t1_closure, G.ECCurve_gostr3410_2001_cryptopro_a_closure, X.ECCurve_gostr3410_2001_cryptopro_b_closure, M.ECCurve_gostr3410_2001_cryptopro_c_closure, Z.ECCurve_gostr3410_2001_cryptopro_xcha_closure, A.ECCurve_gostr3410_2001_cryptopro_xchb_closure, T.ECCurve_prime192v1_closure, M.ECCurve_prime192v2_closure, Q.ECCurve_prime192v3_closure, F.ECCurve_prime239v1_closure, B.ECCurve_prime239v2_closure, B.ECCurve_prime239v3_closure, Z.ECCurve_prime256v1_closure, G.ECCurve_secp112r1_closure, X.ECCurve_secp112r2_closure, Y.ECCurve_secp128r1_closure, X.ECCurve_secp128r2_closure, L.ECCurve_secp160k1_closure, Z.ECCurve_secp160r1_closure, M.ECCurve_secp160r2_closure, D.ECCurve_secp192k1_closure, L.ECCurve_secp192r1_closure, M.ECCurve_secp224k1_closure, V.ECCurve_secp224r1_closure, K.ECCurve_secp256k1_closure, Q.ECCurve_secp256r1_closure, S.ECCurve_secp384r1_closure, R.ECCurve_secp521r1_closure, Z.PBKDF2KeyDerivator_closure, Z.PBKDF2KeyDerivator__closure, V.Scrypt_closure, G.ECKeyGenerator_closure, X.RSAKeyGenerator_closure, V.CBCBlockCipherMac_closure, V.CBCBlockCipherMac__closure, R.CMac_closure, R.CMac__closure, X.HMac_closure, X.HMac__closure, O.PaddedBlockCipherImpl_closure, O.PaddedBlockCipherImpl__closure, Z.ISO7816d4Padding_closure, R.PKCS7Padding_closure, V.AutoSeedBlockCtrRandom_closure, V.AutoSeedBlockCtrRandom__closure, V.AutoSeedBlockCtrRandom_nextBigInteger_closure, V.AutoSeedBlockCtrRandom_nextBytes_closure, V.BlockCtrRandom_closure, V.BlockCtrRandom__closure, E.FortunaRandom_closure, L.ECDSASigner_closure, L.ECDSASigner__closure, N.RSASigner_closure, N.RSASigner__closure, R._escapeRegExp_closure, R._escapeRegExp_closure0, R._RegistryImpl__addStaticFactoryConfig_closure, R._RegistryImpl__addDynamicFactoryConfig_closure, Y.Register64List$from_closure, Y.Register64List_closure, X.CTRStreamCipher_closure, X.CTRStreamCipher__closure, A.Salsa20Engine_closure, F.SICStreamCipher_closure, F.SICStreamCipher__closure, L.main_closure]);
+    _inheritMany(H.Closure, [H.Primitives_functionNoSuchMethod_closure, H.unwrapException_saveStackTrace, H.TearOffClosure, H.initHooks_closure, H.initHooks_closure0, H.initHooks_closure1, P.MapBase_mapToString_closure, P.NoSuchMethodError_toString_closure, P._BigIntImpl_hashCode_combine, P._BigIntImpl_hashCode_finish, K.ASN1ObjectIdentifier_fromComponentString_closure, K.ASN1ObjectIdentifier_registerManyNames_closure, K.ASN1Sequence__encode_closure, K.ASN1Sequence__childLength_closure, K.ASN1Sequence_toString_closure, K.ASN1Util_listToString_closure, A.newRandom_closure, A.OAEPEncoding_closure, A.OAEPEncoding__closure, X.PKCS1Encoding_closure, X.PKCS1Encoding__closure, E.RSAEngine_closure, D.AESFastEngine_closure, D.AESFastEngine_init_closure, B.CBCBlockCipher_closure, B.CBCBlockCipher__closure, B.CFBBlockCipher_closure, B.CFBBlockCipher__closure, M.CTRBlockCipher_closure, M.CTRBlockCipher__closure, F.ECBBlockCipher_closure, F.ECBBlockCipher__closure, T.GCTRBlockCipher_closure, T.GCTRBlockCipher__closure, Z.OFBBlockCipher_closure, Z.OFBBlockCipher__closure, S.SICBlockCipher_closure, S.SICBlockCipher__closure, F.Blake2bDigest_closure, V.MD2Digest_closure, X.MD4Digest_closure, M.MD5Digest_closure, B.RIPEMD128Digest_closure, D.RIPEMD160Digest_closure, K.RIPEMD256Digest_closure, S.RIPEMD320Digest_closure, K.SHA1Digest_closure, E.SHA224Digest_closure, M.SHA256Digest_closure, D.SHA3Digest_closure, D.SHA3Digest__closure, M.SHA384Digest_closure, U.SHA512Digest_closure, D.SHA512tDigest_closure, D.SHA512tDigest__closure, R.TigerDigest_closure, T.WhirlpoolDigest_closure, T.ECCurve_brainpoolp160r1_closure, Y.ECCurve_brainpoolp160t1_closure, Z.ECCurve_brainpoolp192r1_closure, E.ECCurve_brainpoolp192t1_closure, M.ECCurve_brainpoolp224r1_closure, K.ECCurve_brainpoolp224t1_closure, E.ECCurve_brainpoolp256r1_closure, K.ECCurve_brainpoolp256t1_closure, G.ECCurve_brainpoolp320r1_closure, G.ECCurve_brainpoolp320t1_closure, T.ECCurve_brainpoolp384r1_closure, D.ECCurve_brainpoolp384t1_closure, Y.ECCurve_brainpoolp512r1_closure, N.ECCurve_brainpoolp512t1_closure, G.ECCurve_gostr3410_2001_cryptopro_a_closure, X.ECCurve_gostr3410_2001_cryptopro_b_closure, M.ECCurve_gostr3410_2001_cryptopro_c_closure, Z.ECCurve_gostr3410_2001_cryptopro_xcha_closure, A.ECCurve_gostr3410_2001_cryptopro_xchb_closure, T.ECCurve_prime192v1_closure, M.ECCurve_prime192v2_closure, Q.ECCurve_prime192v3_closure, F.ECCurve_prime239v1_closure, B.ECCurve_prime239v2_closure, B.ECCurve_prime239v3_closure, Z.ECCurve_prime256v1_closure, G.ECCurve_secp112r1_closure, X.ECCurve_secp112r2_closure, Y.ECCurve_secp128r1_closure, X.ECCurve_secp128r2_closure, L.ECCurve_secp160k1_closure, Z.ECCurve_secp160r1_closure, M.ECCurve_secp160r2_closure, D.ECCurve_secp192k1_closure, L.ECCurve_secp192r1_closure, M.ECCurve_secp224k1_closure, V.ECCurve_secp224r1_closure, K.ECCurve_secp256k1_closure, Q.ECCurve_secp256r1_closure, S.ECCurve_secp384r1_closure, R.ECCurve_secp521r1_closure, Z.PBKDF2KeyDerivator_closure, Z.PBKDF2KeyDerivator__closure, V.Scrypt_closure, G.ECKeyGenerator_closure, X.RSAKeyGenerator_closure, V.CBCBlockCipherMac_closure, V.CBCBlockCipherMac__closure, R.CMac_closure, R.CMac__closure, X.HMac_closure, X.HMac__closure, O.PaddedBlockCipherImpl_closure, O.PaddedBlockCipherImpl__closure, Z.ISO7816d4Padding_closure, R.PKCS7Padding_closure, V.AutoSeedBlockCtrRandom_closure, V.AutoSeedBlockCtrRandom__closure, V.AutoSeedBlockCtrRandom_nextBigInteger_closure, V.AutoSeedBlockCtrRandom_nextBytes_closure, V.BlockCtrRandom_closure, V.BlockCtrRandom__closure, E.FortunaRandom_closure, L.ECDSASigner_closure, L.ECDSASigner__closure, N.RSASigner_closure, N.RSASigner__closure, R._escapeRegExp_closure, R._escapeRegExp_closure0, R._RegistryImpl__addStaticFactoryConfig_closure, R._RegistryImpl__addDynamicFactoryConfig_closure, Y.Register64List$from_closure, Y.Register64List_closure, X.CTRStreamCipher_closure, X.CTRStreamCipher__closure, A.Salsa20Engine_closure, F.SICStreamCipher_closure, F.SICStreamCipher__closure, L.main_closure]);
     _inheritMany(P.Error, [H.NullError, H.JsNoSuchMethodError, H.UnknownJsTypeError, H.TypeErrorImplementation, H.CastErrorImplementation, H.RuntimeError, P.AssertionError, P.NullThrownError, P.ArgumentError, P.NoSuchMethodError, P.UnsupportedError, P.UnimplementedError, P.StateError, P.ConcurrentModificationError, P.CyclicInitializationError]);
     _inheritMany(H.TearOffClosure, [H.StaticClosure, H.BoundClosure]);
     _inherit(H._AssertionError, P.AssertionError);
@@ -17083,23 +17089,24 @@
     _inheritMany(P.Converter, [P.Base64Encoder, P.JsonDecoder]);
     _inheritMany(P.num, [P.double, P.int]);
     _inheritMany(P.ArgumentError, [P.RangeError, P.IndexError]);
-    _inheritMany(K.ASN1Object, [K.ASN1Integer, K.ASN1Sequence]);
+    _inheritMany(K.ASN1Object, [K.ASN1BitString, K.ASN1Integer, K.ASN1ObjectIdentifier, K.ASN1Sequence]);
+    _inherit(D.ECDSAModule, A.AsymmetricModule);
     _inheritMany(Y.WorkerEvent, [Y.GenIdEvent, Y.GenOwnerEvent]);
     _inheritMany(O.BaseBlockCipher, [X.StreamCipherAsBlockCipher, D.AESFastEngine, B.CBCBlockCipher, B.CFBBlockCipher, F.ECBBlockCipher, T.GCTRBlockCipher, Z.OFBBlockCipher]);
     _inheritMany(N.Algorithm, [N.AsymmetricBlockCipher, N.BlockCipher, N.Digest, N.KeyDerivator, N.KeyGenerator, N.Mac, N.Padding, N.SecureRandom, N.Signer, N.StreamCipher]);
     _inherit(N.KeyParameter, N.CipherParameters);
-    _inheritMany(M.RSAAsymmetricKey, [M.RSAPrivateKey, M.RSAPublicKey]);
     _inheritMany(Q.BaseAsymmetricBlockCipher, [A.OAEPEncoding, X.PKCS1Encoding, E.RSAEngine]);
     _inheritMany(X.StreamCipherAsBlockCipher, [M.CTRBlockCipher, S.SICBlockCipher]);
     _inheritMany(Y.BaseDigest, [F.Blake2bDigest, V.MD2Digest, V.MD4FamilyDigest, D.SHA3Digest, S.LongSHA2FamilyDigest, R.TigerDigest, T.WhirlpoolDigest]);
     _inheritMany(V.MD4FamilyDigest, [X.MD4Digest, M.MD5Digest, B.RIPEMD128Digest, D.RIPEMD160Digest, K.RIPEMD256Digest, S.RIPEMD320Digest, K.SHA1Digest, E.SHA224Digest, M.SHA256Digest]);
     _inheritMany(S.LongSHA2FamilyDigest, [M.SHA384Digest, U.SHA512Digest, D.SHA512tDigest]);
+    _inheritMany(G.ECAsymmetricKey, [G.ECPrivateKey, G.ECPublicKey]);
     _inheritMany(Y.ECDomainParametersImpl, [T.ECCurve_brainpoolp160r1, Y.ECCurve_brainpoolp160t1, Z.ECCurve_brainpoolp192r1, E.ECCurve_brainpoolp192t1, M.ECCurve_brainpoolp224r1, K.ECCurve_brainpoolp224t1, E.ECCurve_brainpoolp256r1, K.ECCurve_brainpoolp256t1, G.ECCurve_brainpoolp320r1, G.ECCurve_brainpoolp320t1, T.ECCurve_brainpoolp384r1, D.ECCurve_brainpoolp384t1, Y.ECCurve_brainpoolp512r1, N.ECCurve_brainpoolp512t1, G.ECCurve_gostr3410_2001_cryptopro_a, X.ECCurve_gostr3410_2001_cryptopro_b, M.ECCurve_gostr3410_2001_cryptopro_c, Z.ECCurve_gostr3410_2001_cryptopro_xcha, A.ECCurve_gostr3410_2001_cryptopro_xchb, T.ECCurve_prime192v1, M.ECCurve_prime192v2, Q.ECCurve_prime192v3, F.ECCurve_prime239v1, B.ECCurve_prime239v2, B.ECCurve_prime239v3, Z.ECCurve_prime256v1, G.ECCurve_secp112r1, X.ECCurve_secp112r2, Y.ECCurve_secp128r1, X.ECCurve_secp128r2, L.ECCurve_secp160k1, Z.ECCurve_secp160r1, M.ECCurve_secp160r2, D.ECCurve_secp192k1, L.ECCurve_secp192r1, M.ECCurve_secp224k1, V.ECCurve_secp224r1, K.ECCurve_secp256k1, Q.ECCurve_secp256r1, S.ECCurve_secp384r1, R.ECCurve_secp521r1]);
     _inherit(M.ECFieldElement, Y.ECFieldElementBase);
     _inherit(M.ECPoint0, Y.ECPointBase);
     _inherit(M.ECCurve0, Y.ECCurveBase);
     _inheritMany(K.BaseKeyDerivator, [Z.PBKDF2KeyDerivator, V.Scrypt]);
-    _inherit(G.RSAKeyGeneratorParameters, N.KeyGeneratorParameters);
+    _inherit(G.ECKeyGeneratorParameters, N.KeyGeneratorParameters);
     _inheritMany(V.BaseMac, [V.CBCBlockCipherMac, R.CMac, X.HMac]);
     _inheritMany(S.BasePadding, [Z.ISO7816d4Padding, R.PKCS7Padding]);
     _inherit(V.BlockCtrRandom, R.SecureRandomBase);
@@ -17110,7 +17117,7 @@
     _mixin(H._NativeTypedArrayOfInt_NativeTypedArray_ListMixin_FixedLengthListMixin, H.FixedLengthListMixin);
     _mixin(P._UnmodifiableMapView_MapView__UnmodifiableMapMixin, P._UnmodifiableMapMixin);
   })();
-  var init = {mangledGlobalNames: {int: "int", double: "double", num: "num", String: "String", bool: "bool", Null: "Null", List: "List"}, mangledNames: {}, getTypeFromName: getGlobalFromName, metadata: [], types: [{func: 1, ret: P.Null, args: [K.ASN1Object]}, {func: 1, ret: Y.Register64, args: [P.int]}, {func: 1, args: [,]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: E.ECCurve_brainpoolp256r1}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, args: [, P.String]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: {func: 1, ret: A.OAEPEncoding}, args: [P.String, P.Match]}, {func: 1, ret: A.OAEPEncoding}, {func: 1, ret: {func: 1, ret: X.PKCS1Encoding}, args: [P.String, P.Match]}, {func: 1, ret: X.PKCS1Encoding}, {func: 1, ret: E.RSAEngine}, {func: 1, ret: D.AESFastEngine}, {func: 1, ret: [P.List, P.int], args: [P.int]}, {func: 1, ret: {func: 1, ret: B.CBCBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: B.CBCBlockCipher}, {func: 1, ret: {func: 1, ret: B.CFBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: B.CFBBlockCipher}, {func: 1, ret: {func: 1, ret: M.CTRBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: M.CTRBlockCipher}, {func: 1, ret: {func: 1, ret: F.ECBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: F.ECBBlockCipher}, {func: 1, ret: {func: 1, ret: T.GCTRBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: T.GCTRBlockCipher}, {func: 1, ret: {func: 1, ret: Z.OFBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: Z.OFBBlockCipher}, {func: 1, ret: {func: 1, ret: S.SICBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: S.SICBlockCipher}, {func: 1, ret: F.Blake2bDigest}, {func: 1, ret: V.MD2Digest}, {func: 1, ret: X.MD4Digest}, {func: 1, ret: M.MD5Digest}, {func: 1, ret: B.RIPEMD128Digest}, {func: 1, ret: D.RIPEMD160Digest}, {func: 1, ret: K.RIPEMD256Digest}, {func: 1, ret: S.RIPEMD320Digest}, {func: 1, ret: K.SHA1Digest}, {func: 1, ret: E.SHA224Digest}, {func: 1, ret: M.SHA256Digest}, {func: 1, ret: {func: 1, ret: D.SHA3Digest}, args: [P.String, P.Match]}, {func: 1, ret: D.SHA3Digest}, {func: 1, ret: M.SHA384Digest}, {func: 1, ret: U.SHA512Digest}, {func: 1, ret: {func: 1, ret: D.SHA512tDigest}, args: [P.String, P.Match]}, {func: 1, ret: D.SHA512tDigest}, {func: 1, ret: R.TigerDigest}, {func: 1, ret: T.WhirlpoolDigest}, {func: 1, ret: T.ECCurve_brainpoolp160r1}, {func: 1, ret: Y.ECCurve_brainpoolp160t1}, {func: 1, ret: Z.ECCurve_brainpoolp192r1}, {func: 1, ret: E.ECCurve_brainpoolp192t1}, {func: 1, ret: M.ECCurve_brainpoolp224r1}, {func: 1, ret: K.ECCurve_brainpoolp224t1}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: K.ECCurve_brainpoolp256t1}, {func: 1, ret: G.ECCurve_brainpoolp320r1}, {func: 1, ret: G.ECCurve_brainpoolp320t1}, {func: 1, ret: T.ECCurve_brainpoolp384r1}, {func: 1, ret: D.ECCurve_brainpoolp384t1}, {func: 1, ret: Y.ECCurve_brainpoolp512r1}, {func: 1, ret: N.ECCurve_brainpoolp512t1}, {func: 1, ret: G.ECCurve_gostr3410_2001_cryptopro_a}, {func: 1, ret: X.ECCurve_gostr3410_2001_cryptopro_b}, {func: 1, ret: M.ECCurve_gostr3410_2001_cryptopro_c}, {func: 1, ret: Z.ECCurve_gostr3410_2001_cryptopro_xcha}, {func: 1, ret: A.ECCurve_gostr3410_2001_cryptopro_xchb}, {func: 1, ret: T.ECCurve_prime192v1}, {func: 1, ret: M.ECCurve_prime192v2}, {func: 1, ret: Q.ECCurve_prime192v3}, {func: 1, ret: F.ECCurve_prime239v1}, {func: 1, ret: B.ECCurve_prime239v2}, {func: 1, ret: B.ECCurve_prime239v3}, {func: 1, ret: Z.ECCurve_prime256v1}, {func: 1, ret: G.ECCurve_secp112r1}, {func: 1, ret: X.ECCurve_secp112r2}, {func: 1, ret: Y.ECCurve_secp128r1}, {func: 1, ret: X.ECCurve_secp128r2}, {func: 1, ret: L.ECCurve_secp160k1}, {func: 1, ret: Z.ECCurve_secp160r1}, {func: 1, ret: M.ECCurve_secp160r2}, {func: 1, ret: D.ECCurve_secp192k1}, {func: 1, ret: L.ECCurve_secp192r1}, {func: 1, ret: M.ECCurve_secp224k1}, {func: 1, ret: V.ECCurve_secp224r1}, {func: 1, ret: K.ECCurve_secp256k1}, {func: 1, ret: Q.ECCurve_secp256r1}, {func: 1, ret: S.ECCurve_secp384r1}, {func: 1, ret: R.ECCurve_secp521r1}, {func: 1, ret: {func: 1, ret: Z.PBKDF2KeyDerivator}, args: [P.String, P.Match]}, {func: 1, ret: Z.PBKDF2KeyDerivator}, {func: 1, ret: V.Scrypt}, {func: 1, ret: G.ECKeyGenerator}, {func: 1, ret: X.RSAKeyGenerator}, {func: 1, ret: {func: 1, ret: V.CBCBlockCipherMac}, args: [P.String, P.Match]}, {func: 1, ret: V.CBCBlockCipherMac}, {func: 1, ret: {func: 1, ret: R.CMac}, args: [P.String, P.Match]}, {func: 1, ret: R.CMac}, {func: 1, ret: {func: 1, ret: X.HMac}, args: [P.String, P.Match]}, {func: 1, ret: X.HMac}, {func: 1, ret: {func: 1, ret: O.PaddedBlockCipherImpl}, args: [P.String, P.Match]}, {func: 1, ret: O.PaddedBlockCipherImpl}, {func: 1, ret: Z.ISO7816d4Padding}, {func: 1, ret: R.PKCS7Padding}, {func: 1, ret: {func: 1, ret: V.AutoSeedBlockCtrRandom}, args: [P.String, P.Match]}, {func: 1, ret: V.AutoSeedBlockCtrRandom}, {func: 1, ret: P.BigInt}, {func: 1, ret: P.Uint8List}, {func: 1, ret: {func: 1, ret: V.BlockCtrRandom}, args: [P.String, P.Match]}, {func: 1, ret: V.BlockCtrRandom}, {func: 1, ret: Y.ECPointBase, args: [Y.ECPointBase, P.BigInt, Y.PreCompInfo]}, {func: 1, ret: {func: 1, ret: L.ECDSASigner}, args: [P.String, P.Match]}, {func: 1, ret: L.ECDSASigner}, {func: 1, ret: {func: 1, ret: N.RSASigner}, args: [P.String, P.Match]}, {func: 1, ret: N.RSASigner}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: [P.Map, P.String, {func: 1}]}, {func: 1, ret: [P.Set, R.DynamicFactoryConfig]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: {func: 1, ret: X.CTRStreamCipher}, args: [P.String, P.Match]}, {func: 1, ret: X.CTRStreamCipher}, {func: 1, ret: A.Salsa20Engine}, {func: 1, ret: {func: 1, ret: F.SICStreamCipher}, args: [P.String, P.Match]}, {func: 1, ret: F.SICStreamCipher}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: T.ECCurve_brainpoolp160r1, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_brainpoolp160t1, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_brainpoolp192r1, args: [,,,,,,]}, {func: 1, ret: E.ECCurve_brainpoolp192t1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_brainpoolp224r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_brainpoolp224t1, args: [,,,,,,]}, {func: 1, ret: E.ECCurve_brainpoolp256r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_brainpoolp256t1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_brainpoolp320r1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_brainpoolp320t1, args: [,,,,,,]}, {func: 1, ret: T.ECCurve_brainpoolp384r1, args: [,,,,,,]}, {func: 1, ret: D.ECCurve_brainpoolp384t1, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_brainpoolp512r1, args: [,,,,,,]}, {func: 1, ret: N.ECCurve_brainpoolp512t1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_gostr3410_2001_cryptopro_a, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_gostr3410_2001_cryptopro_b, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_gostr3410_2001_cryptopro_c, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_gostr3410_2001_cryptopro_xcha, args: [,,,,,,]}, {func: 1, ret: A.ECCurve_gostr3410_2001_cryptopro_xchb, args: [,,,,,,]}, {func: 1, ret: T.ECCurve_prime192v1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_prime192v2, args: [,,,,,,]}, {func: 1, ret: Q.ECCurve_prime192v3, args: [,,,,,,]}, {func: 1, ret: F.ECCurve_prime239v1, args: [,,,,,,]}, {func: 1, ret: B.ECCurve_prime239v2, args: [,,,,,,]}, {func: 1, ret: B.ECCurve_prime239v3, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_prime256v1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_secp112r1, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_secp112r2, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_secp128r1, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_secp128r2, args: [,,,,,,]}, {func: 1, ret: L.ECCurve_secp160k1, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_secp160r1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_secp160r2, args: [,,,,,,]}, {func: 1, ret: D.ECCurve_secp192k1, args: [,,,,,,]}, {func: 1, ret: L.ECCurve_secp192r1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_secp224k1, args: [,,,,,,]}, {func: 1, ret: V.ECCurve_secp224r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_secp256k1, args: [,,,,,,]}, {func: 1, ret: Q.ECCurve_secp256r1, args: [,,,,,,]}, {func: 1, ret: S.ECCurve_secp384r1, args: [,,,,,,]}, {func: 1, ret: R.ECCurve_secp521r1, args: [,,,,,,]}, {func: 1, ret: E.FortunaRandom}], interceptorsByTag: null, leafTags: null};
+  var init = {mangledGlobalNames: {int: "int", double: "double", num: "num", String: "String", bool: "bool", Null: "Null", List: "List"}, mangledNames: {}, getTypeFromName: getGlobalFromName, metadata: [], types: [{func: 1, ret: P.Null, args: [K.ASN1Object]}, {func: 1, ret: Y.Register64, args: [P.int]}, {func: 1, args: [,]}, {func: 1, ret: P.int, args: [P.int]}, {func: 1, ret: K.ECCurve_brainpoolp224t1}, {func: 1, ret: P.Null, args: [P.Symbol0,,]}, {func: 1, ret: P.int, args: [P.int, P.int]}, {func: 1, args: [, P.String]}, {func: 1, ret: P.int, args: [P.String]}, {func: 1, ret: P.Null, args: [P.String, P.String]}, {func: 1, args: [P.String]}, {func: 1, ret: P.Null, args: [P.int]}, {func: 1, ret: {func: 1, ret: A.OAEPEncoding}, args: [P.String, P.Match]}, {func: 1, ret: A.OAEPEncoding}, {func: 1, ret: {func: 1, ret: X.PKCS1Encoding}, args: [P.String, P.Match]}, {func: 1, ret: X.PKCS1Encoding}, {func: 1, ret: E.RSAEngine}, {func: 1, ret: D.AESFastEngine}, {func: 1, ret: [P.List, P.int], args: [P.int]}, {func: 1, ret: {func: 1, ret: B.CBCBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: B.CBCBlockCipher}, {func: 1, ret: {func: 1, ret: B.CFBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: B.CFBBlockCipher}, {func: 1, ret: {func: 1, ret: M.CTRBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: M.CTRBlockCipher}, {func: 1, ret: {func: 1, ret: F.ECBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: F.ECBBlockCipher}, {func: 1, ret: {func: 1, ret: T.GCTRBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: T.GCTRBlockCipher}, {func: 1, ret: {func: 1, ret: Z.OFBBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: Z.OFBBlockCipher}, {func: 1, ret: {func: 1, ret: S.SICBlockCipher}, args: [P.String, P.Match]}, {func: 1, ret: S.SICBlockCipher}, {func: 1, ret: F.Blake2bDigest}, {func: 1, ret: V.MD2Digest}, {func: 1, ret: X.MD4Digest}, {func: 1, ret: M.MD5Digest}, {func: 1, ret: B.RIPEMD128Digest}, {func: 1, ret: D.RIPEMD160Digest}, {func: 1, ret: K.RIPEMD256Digest}, {func: 1, ret: S.RIPEMD320Digest}, {func: 1, ret: K.SHA1Digest}, {func: 1, ret: E.SHA224Digest}, {func: 1, ret: M.SHA256Digest}, {func: 1, ret: {func: 1, ret: D.SHA3Digest}, args: [P.String, P.Match]}, {func: 1, ret: D.SHA3Digest}, {func: 1, ret: M.SHA384Digest}, {func: 1, ret: U.SHA512Digest}, {func: 1, ret: {func: 1, ret: D.SHA512tDigest}, args: [P.String, P.Match]}, {func: 1, ret: D.SHA512tDigest}, {func: 1, ret: R.TigerDigest}, {func: 1, ret: T.WhirlpoolDigest}, {func: 1, ret: T.ECCurve_brainpoolp160r1}, {func: 1, ret: Y.ECCurve_brainpoolp160t1}, {func: 1, ret: Z.ECCurve_brainpoolp192r1}, {func: 1, ret: E.ECCurve_brainpoolp192t1}, {func: 1, ret: M.ECCurve_brainpoolp224r1}, {func: 1, ret: P.Null, args: [P.String,,]}, {func: 1, ret: E.ECCurve_brainpoolp256r1}, {func: 1, ret: K.ECCurve_brainpoolp256t1}, {func: 1, ret: G.ECCurve_brainpoolp320r1}, {func: 1, ret: G.ECCurve_brainpoolp320t1}, {func: 1, ret: T.ECCurve_brainpoolp384r1}, {func: 1, ret: D.ECCurve_brainpoolp384t1}, {func: 1, ret: Y.ECCurve_brainpoolp512r1}, {func: 1, ret: N.ECCurve_brainpoolp512t1}, {func: 1, ret: G.ECCurve_gostr3410_2001_cryptopro_a}, {func: 1, ret: X.ECCurve_gostr3410_2001_cryptopro_b}, {func: 1, ret: M.ECCurve_gostr3410_2001_cryptopro_c}, {func: 1, ret: Z.ECCurve_gostr3410_2001_cryptopro_xcha}, {func: 1, ret: A.ECCurve_gostr3410_2001_cryptopro_xchb}, {func: 1, ret: T.ECCurve_prime192v1}, {func: 1, ret: M.ECCurve_prime192v2}, {func: 1, ret: Q.ECCurve_prime192v3}, {func: 1, ret: F.ECCurve_prime239v1}, {func: 1, ret: B.ECCurve_prime239v2}, {func: 1, ret: B.ECCurve_prime239v3}, {func: 1, ret: Z.ECCurve_prime256v1}, {func: 1, ret: G.ECCurve_secp112r1}, {func: 1, ret: X.ECCurve_secp112r2}, {func: 1, ret: Y.ECCurve_secp128r1}, {func: 1, ret: X.ECCurve_secp128r2}, {func: 1, ret: L.ECCurve_secp160k1}, {func: 1, ret: Z.ECCurve_secp160r1}, {func: 1, ret: M.ECCurve_secp160r2}, {func: 1, ret: D.ECCurve_secp192k1}, {func: 1, ret: L.ECCurve_secp192r1}, {func: 1, ret: M.ECCurve_secp224k1}, {func: 1, ret: V.ECCurve_secp224r1}, {func: 1, ret: K.ECCurve_secp256k1}, {func: 1, ret: Q.ECCurve_secp256r1}, {func: 1, ret: S.ECCurve_secp384r1}, {func: 1, ret: R.ECCurve_secp521r1}, {func: 1, ret: {func: 1, ret: Z.PBKDF2KeyDerivator}, args: [P.String, P.Match]}, {func: 1, ret: Z.PBKDF2KeyDerivator}, {func: 1, ret: V.Scrypt}, {func: 1, ret: G.ECKeyGenerator}, {func: 1, ret: X.RSAKeyGenerator}, {func: 1, ret: {func: 1, ret: V.CBCBlockCipherMac}, args: [P.String, P.Match]}, {func: 1, ret: V.CBCBlockCipherMac}, {func: 1, ret: {func: 1, ret: R.CMac}, args: [P.String, P.Match]}, {func: 1, ret: R.CMac}, {func: 1, ret: {func: 1, ret: X.HMac}, args: [P.String, P.Match]}, {func: 1, ret: X.HMac}, {func: 1, ret: {func: 1, ret: O.PaddedBlockCipherImpl}, args: [P.String, P.Match]}, {func: 1, ret: O.PaddedBlockCipherImpl}, {func: 1, ret: Z.ISO7816d4Padding}, {func: 1, ret: R.PKCS7Padding}, {func: 1, ret: {func: 1, ret: V.AutoSeedBlockCtrRandom}, args: [P.String, P.Match]}, {func: 1, ret: V.AutoSeedBlockCtrRandom}, {func: 1, ret: P.BigInt}, {func: 1, ret: P.Uint8List}, {func: 1, ret: {func: 1, ret: V.BlockCtrRandom}, args: [P.String, P.Match]}, {func: 1, ret: Y.ECPointBase, args: [Y.ECPointBase, P.BigInt, Y.PreCompInfo]}, {func: 1, ret: E.FortunaRandom}, {func: 1, ret: {func: 1, ret: L.ECDSASigner}, args: [P.String, P.Match]}, {func: 1, ret: L.ECDSASigner}, {func: 1, ret: {func: 1, ret: N.RSASigner}, args: [P.String, P.Match]}, {func: 1, ret: N.RSASigner}, {func: 1, ret: P.String, args: [P.Match]}, {func: 1, ret: P.String, args: [P.String]}, {func: 1, ret: [P.Map, P.String, {func: 1}]}, {func: 1, ret: [P.Set, R.DynamicFactoryConfig]}, {func: 1, ret: P.Null, args: [,,]}, {func: 1, ret: {func: 1, ret: X.CTRStreamCipher}, args: [P.String, P.Match]}, {func: 1, ret: X.CTRStreamCipher}, {func: 1, ret: A.Salsa20Engine}, {func: 1, ret: {func: 1, ret: F.SICStreamCipher}, args: [P.String, P.Match]}, {func: 1, ret: F.SICStreamCipher}, {func: 1, ret: P.Null, args: [,]}, {func: 1, ret: T.ECCurve_brainpoolp160r1, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_brainpoolp160t1, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_brainpoolp192r1, args: [,,,,,,]}, {func: 1, ret: E.ECCurve_brainpoolp192t1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_brainpoolp224r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_brainpoolp224t1, args: [,,,,,,]}, {func: 1, ret: E.ECCurve_brainpoolp256r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_brainpoolp256t1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_brainpoolp320r1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_brainpoolp320t1, args: [,,,,,,]}, {func: 1, ret: T.ECCurve_brainpoolp384r1, args: [,,,,,,]}, {func: 1, ret: D.ECCurve_brainpoolp384t1, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_brainpoolp512r1, args: [,,,,,,]}, {func: 1, ret: N.ECCurve_brainpoolp512t1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_gostr3410_2001_cryptopro_a, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_gostr3410_2001_cryptopro_b, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_gostr3410_2001_cryptopro_c, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_gostr3410_2001_cryptopro_xcha, args: [,,,,,,]}, {func: 1, ret: A.ECCurve_gostr3410_2001_cryptopro_xchb, args: [,,,,,,]}, {func: 1, ret: T.ECCurve_prime192v1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_prime192v2, args: [,,,,,,]}, {func: 1, ret: Q.ECCurve_prime192v3, args: [,,,,,,]}, {func: 1, ret: F.ECCurve_prime239v1, args: [,,,,,,]}, {func: 1, ret: B.ECCurve_prime239v2, args: [,,,,,,]}, {func: 1, ret: B.ECCurve_prime239v3, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_prime256v1, args: [,,,,,,]}, {func: 1, ret: G.ECCurve_secp112r1, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_secp112r2, args: [,,,,,,]}, {func: 1, ret: Y.ECCurve_secp128r1, args: [,,,,,,]}, {func: 1, ret: X.ECCurve_secp128r2, args: [,,,,,,]}, {func: 1, ret: L.ECCurve_secp160k1, args: [,,,,,,]}, {func: 1, ret: Z.ECCurve_secp160r1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_secp160r2, args: [,,,,,,]}, {func: 1, ret: D.ECCurve_secp192k1, args: [,,,,,,]}, {func: 1, ret: L.ECCurve_secp192r1, args: [,,,,,,]}, {func: 1, ret: M.ECCurve_secp224k1, args: [,,,,,,]}, {func: 1, ret: V.ECCurve_secp224r1, args: [,,,,,,]}, {func: 1, ret: K.ECCurve_secp256k1, args: [,,,,,,]}, {func: 1, ret: Q.ECCurve_secp256r1, args: [,,,,,,]}, {func: 1, ret: S.ECCurve_secp384r1, args: [,,,,,,]}, {func: 1, ret: R.ECCurve_secp521r1, args: [,,,,,,]}, {func: 1, ret: V.BlockCtrRandom}], interceptorsByTag: null, leafTags: null};
   (function constants() {
     var makeConstList = hunkHelpers.makeConstList;
     C.Interceptor_methods = J.Interceptor.prototype;
@@ -17289,6 +17296,11 @@
     $._BigIntImpl__lastRemUsed = null;
     $._BigIntImpl__lastRem_nsh = null;
     $.Random__secureRandom = null;
+    $.ASN1ObjectIdentifier_DN = function() {
+      var t1 = P.String;
+      return P.LinkedHashMap_LinkedHashMap$_literal(["cn", "2.5.4.3", "sn", "2.5.4.4", "c", "2.5.4.6", "l", "2.5.4.7", "st", "2.5.4.8", "s", "2.5.4.8", "o", "2.5.4.10", "ou", "2.5.4.11", "title", "2.5.4.12", "registeredAddress", "2.5.4.26", "member", "2.5.4.31", "owner", "2.5.4.32", "roleOccupant", "2.5.4.33", "seeAlso", "2.5.4.34", "givenName", "2.5.4.42", "initials", "2.5.4.43", "generationQualifier", "2.5.4.44", "dmdName", "2.5.4.54", "alias", "2.5.6.1", "country", "2.5.6.2", "locality", "2.5.6.3", "organization", "2.5.6.4", "organizationalUnit", "2.5.6.5", "person", "2.5.6.6", "organizationalPerson", "2.5.6.7", "organizationalRole", "2.5.6.8", "groupOfNames", "2.5.6.9", "residentialPerson", "2.5.6.10", "applicationProcess", "2.5.6.11", "applicationEntity", "2.5.6.12", "dSA", "2.5.6.13", "device", "2.5.6.14", "strongAuthenticationUser", "2.5.6.15", "certificationAuthority", "2.5.6.16", "groupOfUniqueNames", "2.5.6.17", "userSecurityInformation", "2.5.6.18", "certificationAuthority-V2", "2.5.6.16.2", "cRLDistributionPoint", "2.5.6.19", "dmd", "2.5.6.20", "md5WithRSAEncryption", "1.2.840.113549.1.1.4", "rsaEncryption", "1.2.840.113549.1.1.1", "sha256WithRSAEncryption", "1.2.840.113549.1.1.11", "subjectAltName", "2.5.29.17", "businessCategory", "2.5.4.15", "jurisdictionOfIncorporationC", "1.3.6.1.4.1.311.60.2.1.3", "jurisdictionOfIncorporationSP", "1.3.6.1.4.1.311.60.2.1.2", "jurisdictionOfIncorporationL", "1.3.6.1.4.1.311.60.2.1.1", "sha1WithRSAEncryption", "1.2.840.113549.1.1.5"], t1, t1);
+    }();
+    $.ASN1ObjectIdentifier__names = P.LinkedHashMap_LinkedHashMap$_empty(P.String, K.ASN1ObjectIdentifier);
     $._S = H.setRuntimeTypeInfo([99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22], [P.int]);
     $._Si = H.setRuntimeTypeInfo([82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125], [P.int]);
     $._rcon = H.setRuntimeTypeInfo([1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145], [P.int]);
@@ -17649,15 +17661,6 @@
     });
     _lazy($, "RSAKeyGenerator_FACTORY_CONFIG", "$get$RSAKeyGenerator_FACTORY_CONFIG", function() {
       return R.StaticFactoryConfig$(C.Type_KeyGenerator_P1S, "RSA", new X.RSAKeyGenerator_closure());
-    });
-    _lazy($, "_lowprimes", "$get$_lowprimes", function() {
-      return H.setRuntimeTypeInfo([P._BigIntImpl__BigIntImpl$from(2), P._BigIntImpl__BigIntImpl$from(3), P._BigIntImpl__BigIntImpl$from(5), P._BigIntImpl__BigIntImpl$from(7), P._BigIntImpl__BigIntImpl$from(11), P._BigIntImpl__BigIntImpl$from(13), P._BigIntImpl__BigIntImpl$from(17), P._BigIntImpl__BigIntImpl$from(19), P._BigIntImpl__BigIntImpl$from(23), P._BigIntImpl__BigIntImpl$from(29), P._BigIntImpl__BigIntImpl$from(31), P._BigIntImpl__BigIntImpl$from(37), P._BigIntImpl__BigIntImpl$from(41), P._BigIntImpl__BigIntImpl$from(43), P._BigIntImpl__BigIntImpl$from(47), P._BigIntImpl__BigIntImpl$from(53), P._BigIntImpl__BigIntImpl$from(59), P._BigIntImpl__BigIntImpl$from(61), P._BigIntImpl__BigIntImpl$from(67), P._BigIntImpl__BigIntImpl$from(71), P._BigIntImpl__BigIntImpl$from(73), P._BigIntImpl__BigIntImpl$from(79), P._BigIntImpl__BigIntImpl$from(83), P._BigIntImpl__BigIntImpl$from(89), P._BigIntImpl__BigIntImpl$from(97), P._BigIntImpl__BigIntImpl$from(101), P._BigIntImpl__BigIntImpl$from(103), P._BigIntImpl__BigIntImpl$from(107), P._BigIntImpl__BigIntImpl$from(109), P._BigIntImpl__BigIntImpl$from(113), P._BigIntImpl__BigIntImpl$from(127), P._BigIntImpl__BigIntImpl$from(131), P._BigIntImpl__BigIntImpl$from(137), P._BigIntImpl__BigIntImpl$from(139), P._BigIntImpl__BigIntImpl$from(149), P._BigIntImpl__BigIntImpl$from(151), P._BigIntImpl__BigIntImpl$from(157), P._BigIntImpl__BigIntImpl$from(163), P._BigIntImpl__BigIntImpl$from(167), P._BigIntImpl__BigIntImpl$from(173), P._BigIntImpl__BigIntImpl$from(179), P._BigIntImpl__BigIntImpl$from(181), P._BigIntImpl__BigIntImpl$from(191), P._BigIntImpl__BigIntImpl$from(193), P._BigIntImpl__BigIntImpl$from(197), P._BigIntImpl__BigIntImpl$from(199), P._BigIntImpl__BigIntImpl$from(211), P._BigIntImpl__BigIntImpl$from(223), P._BigIntImpl__BigIntImpl$from(227), P._BigIntImpl__BigIntImpl$from(229), P._BigIntImpl__BigIntImpl$from(233), P._BigIntImpl__BigIntImpl$from(239), P._BigIntImpl__BigIntImpl$from(241), P._BigIntImpl__BigIntImpl$from(251), P._BigIntImpl__BigIntImpl$from(257), P._BigIntImpl__BigIntImpl$from(263), P._BigIntImpl__BigIntImpl$from(269), P._BigIntImpl__BigIntImpl$from(271), P._BigIntImpl__BigIntImpl$from(277), P._BigIntImpl__BigIntImpl$from(281), P._BigIntImpl__BigIntImpl$from(283), P._BigIntImpl__BigIntImpl$from(293), P._BigIntImpl__BigIntImpl$from(307), P._BigIntImpl__BigIntImpl$from(311), P._BigIntImpl__BigIntImpl$from(313), P._BigIntImpl__BigIntImpl$from(317), P._BigIntImpl__BigIntImpl$from(331), P._BigIntImpl__BigIntImpl$from(337), P._BigIntImpl__BigIntImpl$from(347), P._BigIntImpl__BigIntImpl$from(349), P._BigIntImpl__BigIntImpl$from(353), P._BigIntImpl__BigIntImpl$from(359), P._BigIntImpl__BigIntImpl$from(367), P._BigIntImpl__BigIntImpl$from(373), P._BigIntImpl__BigIntImpl$from(379), P._BigIntImpl__BigIntImpl$from(383), P._BigIntImpl__BigIntImpl$from(389), P._BigIntImpl__BigIntImpl$from(397), P._BigIntImpl__BigIntImpl$from(401), P._BigIntImpl__BigIntImpl$from(409), P._BigIntImpl__BigIntImpl$from(419), P._BigIntImpl__BigIntImpl$from(421), P._BigIntImpl__BigIntImpl$from(431), P._BigIntImpl__BigIntImpl$from(433), P._BigIntImpl__BigIntImpl$from(439), P._BigIntImpl__BigIntImpl$from(443), P._BigIntImpl__BigIntImpl$from(449), P._BigIntImpl__BigIntImpl$from(457), P._BigIntImpl__BigIntImpl$from(461), P._BigIntImpl__BigIntImpl$from(463), P._BigIntImpl__BigIntImpl$from(467), P._BigIntImpl__BigIntImpl$from(479), P._BigIntImpl__BigIntImpl$from(487), P._BigIntImpl__BigIntImpl$from(491), P._BigIntImpl__BigIntImpl$from(499), P._BigIntImpl__BigIntImpl$from(503), P._BigIntImpl__BigIntImpl$from(509)], [P.BigInt]);
-    });
-    _lazy($, "_lplim", "$get$_lplim", function() {
-      return $.$get$_BigIntImpl_one().$shl(0, 26).$tdiv(0, C.JSArray_methods.get$last($.$get$_lowprimes()));
-    });
-    _lazy($, "_bigTwo", "$get$_bigTwo", function() {
-      return P._BigIntImpl__BigIntImpl$from(2);
     });
     _lazy($, "CBCBlockCipherMac_FACTORY_CONFIG", "$get$CBCBlockCipherMac_FACTORY_CONFIG", function() {
       return R.DynamicFactoryConfig$regex(C.Type_Mac_8Gl, "^(.+)/CBC_CMAC(/(.+))?$", new V.CBCBlockCipherMac_closure());

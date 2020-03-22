@@ -2,8 +2,8 @@
 library worker;
 
 import 'package:core/infrastructure/owner.dart';
+import 'package:core/utils/asymmetric/ecdsa.dart';
 import 'package:core/utils/random.dart';
-import 'package:core/utils/rsa.dart';
 import 'package:core/utils/worker.dart';
 import 'package:js/js.dart';
 
@@ -37,9 +37,10 @@ void main() {
         final event = data as GenOwnerEvent;
         print("Generating Owner with id: ${event.id}, name: ${event.name}");
         final random = newRandom();
-        final keyPair = genKeyPair(random);
+        final module = ECDSAModule();
+        final keyPair = module.genKeyPair(random);
 
-        PostMessage(Owner(event.id, event.name, keyPair).toString());
+        PostMessage(Owner(event.id, event.name, module, keyPair).toString());
         break;
       default:
         throw 'Unsupported EventType: ${data.type}';
