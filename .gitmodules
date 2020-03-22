@@ -1,6 +1,3 @@
 [submodule "core"]
 	path = core
 	url = git@github.com:MoBlaa/lid_core.git
-[submodule "angular"]
-	path = angular
-	url = git@github.com:MoBlaa/lid_web.git
