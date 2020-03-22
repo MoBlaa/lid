@@ -4874,14 +4874,6 @@
     },
     ECCurve_gostr3410_2001_cryptopro_xcha_closure: function ECCurve_gostr3410_2001_cryptopro_xcha_closure() {
     },
-    ECCurve_prime256v1_ECCurve_prime256v1: function() {
-      var t1 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000ffffffffffffffffffffffff", 16),
-        t2 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000fffffffffffffffffffffffc", 16),
-        t3 = P._BigIntImpl_parse("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16),
-        t4 = P._BigIntImpl_parse("036b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
-        t5 = P._BigIntImpl_parse("ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 16);
-      return H.interceptedTypeCheck(F.constructFpStandardCurve("prime256v1", Z.prime256v1_ECCurve_prime256v1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("c49d360886e704936a6678e1139d26b7819f7e90", 16)), "$isECCurve_prime256v1");
-    },
     ECCurve_prime256v1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
       return new Z.ECCurve_prime256v1($G, n, _h);
@@ -5052,6 +5044,14 @@
       _._wordBuffer = t4;
       _._tiger$_buffer = t5;
     }, TigerDigest_closure: function TigerDigest_closure() {
+    },
+    ECCurve_secp521r1_ECCurve_secp521r1: function() {
+      var t1 = P._BigIntImpl_parse("1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16),
+        t2 = P._BigIntImpl_parse("1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc", 16),
+        t3 = P._BigIntImpl_parse("51953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00", 16),
+        t4 = P._BigIntImpl_parse("0400c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66011839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650", 16),
+        t5 = P._BigIntImpl_parse("1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa51868783bf2f966b7fcc0148f709a5d03bb5c9b8899c47aebb6fb71e91386409", 16);
+      return H.interceptedTypeCheck(F.constructFpStandardCurve("secp521r1", R.secp521r1_ECCurve_secp521r1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("d09e8800291cb85396cc6717393284aaa0da64ba", 16)), "$isECCurve_secp521r1");
     },
     ECCurve_secp521r1__make: function(domainName, curve, $G, n, _h, seed) {
       H.assertSubtype(seed, "$isList", [P.int], "$asList");
@@ -14654,7 +14654,12 @@
   Z.ECCurve_prime256v1.prototype = {};
   Z.ECCurve_prime256v1_closure.prototype = {
     call$0: function() {
-      return Z.ECCurve_prime256v1_ECCurve_prime256v1();
+      var t1 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000ffffffffffffffffffffffff", 16),
+        t2 = P._BigIntImpl_parse("ffffffff00000001000000000000000000000000fffffffffffffffffffffffc", 16),
+        t3 = P._BigIntImpl_parse("5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b", 16),
+        t4 = P._BigIntImpl_parse("036b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296", 16),
+        t5 = P._BigIntImpl_parse("ffffffff00000000ffffffffffffffffbce6faada7179e84f3b9cac2fc632551", 16);
+      return H.interceptedTypeCheck(F.constructFpStandardCurve("prime256v1", Z.prime256v1_ECCurve_prime256v1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("c49d360886e704936a6678e1139d26b7819f7e90", 16)), "$isECCurve_prime256v1");
     },
     "call*": "call$0",
     $requiredArgCount: 0,
@@ -14859,12 +14864,7 @@
   R.ECCurve_secp521r1.prototype = {};
   R.ECCurve_secp521r1_closure.prototype = {
     call$0: function() {
-      var t1 = P._BigIntImpl_parse("1ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16),
-        t2 = P._BigIntImpl_parse("1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc", 16),
-        t3 = P._BigIntImpl_parse("51953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00", 16),
-        t4 = P._BigIntImpl_parse("0400c6858e06b70404e9cd9e3ecb662395b4429c648139053fb521f828af606b4d3dbaa14b5e77efe75928fe1dc127a2ffa8de3348b3c1856a429bf97e7e31c2e5bd66011839296a789a3bc0045c8a5fb42c7d1bd998f54449579b446817afbd17273e662c97ee72995ef42640c550b9013fad0761353c7086a272c24088be94769fd16650", 16),
-        t5 = P._BigIntImpl_parse("1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa51868783bf2f966b7fcc0148f709a5d03bb5c9b8899c47aebb6fb71e91386409", 16);
-      return H.interceptedTypeCheck(F.constructFpStandardCurve("secp521r1", R.secp521r1_ECCurve_secp521r1__make$closure(), t2, t3, t4, P._BigIntImpl_parse("1", 16), t5, t1, P._BigIntImpl_parse("d09e8800291cb85396cc6717393284aaa0da64ba", 16)), "$isECCurve_secp521r1");
+      return R.ECCurve_secp521r1_ECCurve_secp521r1();
     },
     "call*": "call$0",
     $requiredArgCount: 0,
@@ -16956,7 +16956,7 @@
   L.MessageEvent.prototype = {};
   L.main_closure.prototype = {
     call$1: function($event) {
-      var t2, random, t3, t4, params, gen, ecparams,
+      var t2, random, t3, t4, p, gen, ecparams,
         data = Y.WorkerEvent_resolve(H.stringTypeCast(J.get$data$x(H.interceptedTypeCast($event, "$isMessageEvent")))),
         t1 = data.type;
       switch (t1) {
@@ -16973,16 +16973,16 @@
           P.print("Generating Owner with id: " + H.S(t1) + ", name: " + H.S(t2));
           random = A.newRandom();
           K.ASN1ObjectIdentifier_registerManyNames($.ASN1ObjectIdentifier_DN);
-          t3 = Z.ECCurve_prime256v1_ECCurve_prime256v1();
+          t3 = R.ECCurve_secp521r1_ECCurve_secp521r1();
           t4 = t3.n;
           t4.get$bitLength(t4);
-          params = new G.ECKeyGeneratorParameters();
-          params._domainParameters = t3;
+          p = new G.ECKeyGeneratorParameters();
+          p._domainParameters = t3;
           gen = new G.ECKeyGenerator();
-          t3 = new N.ParametersWithRandom(params, random, [G.ECKeyGeneratorParameters]);
+          t3 = new N.ParametersWithRandom(p, random, [G.ECKeyGeneratorParameters]);
           if (!!t3.$isParametersWithRandom) {
             gen._random = random;
-            ecparams = params;
+            ecparams = p;
           } else {
             gen._random = $.$get$registry().create$1$1("", N.SecureRandom);
             H.interceptedTypeCheck(t3, "$isECKeyGeneratorParameters");
