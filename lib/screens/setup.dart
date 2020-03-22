@@ -1,5 +1,4 @@
 import 'package:core/bloc/setup.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class SetupScreen extends StatefulWidget {
@@ -70,7 +69,7 @@ class _SetupScreenState extends State<SetupScreen> {
   }
 
   void _createIdentity(SetupBloc bloc, String name) async {
-    final owner = kIsWeb ? await bloc.genOwnerWorker(name) : await bloc.genOwner(name);
+    final owner = await bloc.generate(name);
     Navigator.pop(context, owner);
   }
 }

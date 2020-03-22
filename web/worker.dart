@@ -1,3 +1,6 @@
+@JS()
+library worker;
+
 import 'package:core/infrastructure/owner.dart';
 import 'package:core/utils/random.dart';
 import 'package:core/utils/rsa.dart';
@@ -27,8 +30,8 @@ void main() {
     switch (data.type) {
       case GenIdType:
         final event = data as GenIdEvent;
-        print("Generating Id with length: ${event.strlen}");
-        PostMessage(generateRandomString(event.strlen));
+        print("Generating Id with length: ${event.length}");
+        PostMessage(generateRandomString(event.length));
         break;
       case GenOwnerType:
         final event = data as GenOwnerEvent;
