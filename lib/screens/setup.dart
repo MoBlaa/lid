@@ -1,5 +1,8 @@
 import 'package:core/bloc/setup.dart';
+import 'package:core/domain/crypto/module.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lidwebplugin/core.dart';
 
 class SetupScreen extends StatefulWidget {
   @override
@@ -8,7 +11,7 @@ class SetupScreen extends StatefulWidget {
 
 class _SetupScreenState extends State<SetupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _bloc = SetupBloc();
+  final _bloc = SetupBloc(kIsWeb ? CorePlugin() : FlutterCryptoModule());
 
   String _validateName(String value) {
     if (value.isEmpty) {

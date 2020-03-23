@@ -1,5 +1,5 @@
 import 'package:core/bloc/owner.dart';
-import 'package:core/infrastructure/owner.dart';
+import 'package:core/domain/owner.dart';
 import 'package:core/infrastructure/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

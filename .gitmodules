@@ -1,3 +1,6 @@
 [submodule "core"]
 	path = core
 	url = git@github.com:MoBlaa/lid_core.git
+[submodule "lid_plugin"]
+	path = lid_plugin
+	url = git@github.com:MoBlaa/lid_plugin.git

@@ -1,11 +1,11 @@
 @JS()
 library worker;
 
-import 'package:core/infrastructure/owner.dart';
-import 'package:core/utils/asymmetric/ecdsa.dart';
-import 'package:core/utils/random.dart';
-import 'package:core/utils/worker.dart';
+import 'package:core/domain/crypto/asymmetric/ecdsa.dart';
+import 'package:core/domain/crypto/random.dart';
+import 'package:core/domain/owner.dart';
 import 'package:js/js.dart';
+import 'package:lidwebplugin/web/events.dart';
 
 @anonymous
 @JS()

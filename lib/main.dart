@@ -1,5 +1,6 @@
 import 'package:core/bloc/landingpage.dart';
-import 'package:core/infrastructure/owner.dart';
+import 'package:core/domain/owner.dart';
+import 'package:core/infrastructure/hive.dart';
 import 'package:core/infrastructure/repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
     return FutureProvider(
       create: (_) async {
         await Hive.initFlutter();
-        return await Repository.create();
+        return await HiveRepository.create();
       },
       lazy: true,
       child: MaterialApp(
